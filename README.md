@@ -1,8 +1,7 @@
 # alice-renderer
 Библиотека для формирования [ответов](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/#response) в навыках Алисы. 
-Основана на [Tagged Template Literals](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/template_strings), 
-что позволяет в компактной форме записывать текстово-голосовой ответ с кнопками, аудио-эффектами, 
-вариативностью и другими кастомизациями.
+Позволяет в компактной форме записывать текстово-голосовой ответ с аудио-эффектами, кнопками и другими кастомизациями, 
+используя [tagged template literals](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/template_strings).
 
 ## Содержание
 
