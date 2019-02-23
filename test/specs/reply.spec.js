@@ -56,7 +56,7 @@ describe('reply', () => {
     `;
     assert.deepEqual(res,  {
       text: 'Здорово!\nКак дела? Хорошо.',
-      tts: '<speaker audio=\"alice-sounds-game-win-1.opus\"> Здор+ово! - - - - - - - Как дел+а? Супер.',
+      tts: '<speaker audio="alice-sounds-game-win-1.opus"> Здор+ово! - - - - - - - Как дел+а? Супер.',
       buttons: [
         {title: 'Отлично', hide: true},
         {title: 'Супер', hide: true},

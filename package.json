@@ -7,7 +7,8 @@
     "test": "mocha test/setup.js test/specs/*.spec.js",
     "test:cov": "nyc --reporter=html npm t && nyc report",
     "check:cov": "nyc check-coverage --lines 100",
-    "open:cov": "open coverage/index.html"
+    "open:cov": "open coverage/index.html",
+    "ci": "npm run code && npm run test:cov && npm run check:cov"
   },
   "main": "src/index.js",
   "husky": {
