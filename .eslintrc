@@ -1,0 +1,25 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+
+  "env": {
+    "commonjs": true,
+    "node": true,
+    "es6": true
+  },
+
+  "rules": {
+    "complexity": ["error", {"max" : 7}],
+    "max-depth": ["error", {"max" : 2}],
+    "max-nested-callbacks": ["error", {"max" : 2}],
+    "max-params": ["error", {"max" : 4}],
+    "max-statements": ["error", {"max" : 15}, {"ignoreTopLevelFunctions": false}],
+    "max-len": ["error", {"code" : 120, "ignoreUrls": true}],
+    "max-lines": ["error", {"max": 180, "skipComments": true, "skipBlankLines": true}],
+    "semi": ["error", "always"],
+    "space-before-function-paren": ["error", {"anonymous": "always", "named": "never", "asyncArrow": "always"}]
+  }
+}
