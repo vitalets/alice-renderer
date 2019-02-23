@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "description": "Replies renderer for Yandex Alice skills",
   "scripts": {
-    "code": "eslint src",
-    "test": "mocha test/setup.js test/*.spec.js"
+    "code": "eslint src test",
+    "test": "mocha test/setup.js test/specs/*.spec.js",
+    "test:cov": "nyc --reporter=html npm t && nyc report",
+    "check:cov": "nyc check-coverage --lines 100",
+    "open:cov": "open coverage/index.html"
   },
+  "main": "src/index.js",
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
@@ -22,7 +26,7 @@
     "husky": "^1.3.1",
     "lint-staged": "^8.1.4",
     "mocha": "^6.0.1",
-    "nyc": "^13.1.0",
+    "nyc": "^13.3.0",
     "sinon": "^7.1.1"
   },
   "license": "MIT"

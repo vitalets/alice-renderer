@@ -65,7 +65,7 @@ console.log(response);
 /*
 {
   text: 'Здорово! Как дела?',
-  tts: '<speaker audio="alice-sounds-game-win-1.opus"> Здор+ово! - - - Как дел+а?',
+  tts: '<speaker audio="alice-sounds-game-win-1.opus"> Здор+ово! - - - - - - - Как дел+а?',
   buttons: [
     {title: 'Отлично', hide: true},
     {title: 'Супер', hide: true},
@@ -94,7 +94,7 @@ console.log(response);
 /*
 {
   text: 'Добрый день, Виталий Потапов! Как дела?',
-  tts: 'Добрый день, Виталий Пот+апов! - - - Как дел+а?',
+  tts: 'Добрый день, Виталий Пот+апов! - - - - - - - Как дел+а?',
   buttons: [
     {title: 'Отлично', hide: true},
     {title: 'Супер', hide: true},
@@ -121,7 +121,7 @@ reply`
 /*
 {
   text: 'Здорово! Как дела?',
-  tts: '<speaker audio="alice-sounds-game-win-1.opus"> Здор+ово! - - - Как дел+а?',
+  tts: '<speaker audio="alice-sounds-game-win-1.opus"> Здор+ово! - - - - - - - Как дел+а?',
   buttons: [
     {title: 'Отлично', hide: true},
     {title: 'Супер', hide: true},

@@ -6,4 +6,5 @@ node_modules
 
 # logs
 npm-debug.log
-/roadmap.txt
+/.nyc_output
+/coverage
