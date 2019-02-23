@@ -11,6 +11,9 @@
     "ci": "npm run code && npm run test:cov && npm run check:cov"
   },
   "main": "src/index.js",
+  "engines": {
+    "node": ">=8"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
