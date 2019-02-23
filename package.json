@@ -8,7 +8,12 @@
     "test:cov": "nyc --reporter=html npm t && nyc report",
     "check:cov": "nyc check-coverage --lines 100",
     "open:cov": "open coverage/index.html",
-    "ci": "npm run code && npm run test:cov && npm run check:cov"
+    "ci": "run-s code test:cov check:cov",
+    "prerelease": "run-s code test:cov check:cov",
+    "postrelease": "git push --follow-tags --no-verify",
+    "release": "npm version $VER && npm publish --access public",
+    "release-patch": "VER=patch npm run release",
+    "release-minor": "VER=minor npm run release"
   },
   "main": "src/index.js",
   "engines": {
@@ -17,7 +22,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "run-s code test"
+      "pre-push": "run-s code test:cov check:cov"
     }
   },
   "lint-staged": {
