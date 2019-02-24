@@ -1,7 +1,10 @@
 # alice-renderer
+
+[![Build Status](https://travis-ci.org/vitalets/alice-renderer.svg?branch=master)](https://travis-ci.org/vitalets/alice-renderer)
+
 Библиотека для формирования [ответов](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/#response) в навыках Алисы. 
-Позволяет в компактной форме записывать текстово-голосовой ответ с аудио-эффектами, кнопками и другими кастомизациями, 
-используя [tagged template literals](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/template_strings).
+Позволяет в компактной форме записывать текстово-голосовой ответ с добавлением вариативности, аудио-эффектов, кнопок и других кастомизаций.
+Использует [tagged template literals](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/template_strings).
 
 ## Содержание
 
@@ -37,40 +40,55 @@ npm i alice-renderer
 
 ## Использование
 ### Базовый пример
-В простейшем случае применение функции [`reply`](#reply) к некоторой строке
-записывает эту строку в объект с полями `text` и `tts`. При этом из текста вырезаются акценты (`+`):
+В простейшем варианте можно применить тег-функцию [`reply`](#reply) к некоторой строке.
+В результате получим объект с полями `text` и `tts`, где записана переданная строка.
+При этом для текстового представления из строки вырезаются акценты (`+`):
 ```js
 const {reply} = require('alice-renderer');
 
-const response = reply`Привет! Как дел+а?`;
+const response = reply`Как дел+а?`;
 
 console.log(response);
 
 /*
 {
-  text: 'Привет! Как дела?',
-  tts: 'Привет! Как дел+а?',
+  text: 'Как дела?',
+  tts: 'Как дел+а?',
   end_session: false
 }
 */
 ```
 
 ### Пример с модификаторами
-Функции-модификаторы позволяют добавлять в ответ вариативность, кнопки, аудио эффекты итд:
+Функции-модификаторы позволяют обогащать ответ отдельно в текстовом и голосовом каналах.
+Например, мождификатор [`audio`](#audioname) добавляет звук - он запишется только в поле `tts`:
 ```js
-const {reply, audio, pause, buttons} = require('alice-renderer');
+const {reply, audio} = require('alice-renderer');
 
-const response = reply`
-  ${audio('sounds-game-win-1')} ${['Привет', 'Здор+ово']}! ${pause(500)} Как дел+а?
-  ${buttons(['Отлично', 'Супер'])}
-`;
-
-console.log(response);
+reply`${audio('sounds-game-win-1')} Как дел+а?`;
 
 /*
 {
-  text: 'Здорово! Как дела?',
-  tts: '<speaker audio="alice-sounds-game-win-1.opus"> Здор+ово! - - - - - - - Как дел+а?',
+  text: 'Как дела?',
+  tts: '<speaker audio="alice-sounds-game-win-1.opus"> Как дел+а?',
+  end_session: false
+}
+*/
+```
+
+Модификатор [`buttons`](#buttonsitems-defaults) позволяет добавить кнопки:
+```js
+const {reply, audio, buttons} = require('alice-renderer');
+
+reply`
+  ${audio('sounds-game-win-1')} Как дел+а?
+  ${buttons(['Отлично', 'Супер'])}
+`;
+
+/*
+{
+  text: 'Как дела?',
+  tts: '<speaker audio="alice-sounds-game-win-1.opus"> Как дел+а?',
   buttons: [
     {title: 'Отлично', hide: true},
     {title: 'Супер', hide: true},
@@ -79,11 +97,32 @@ console.log(response);
 }
 */
 ```
-При передаче массива в виде `${[item1, item2, ...]}` из него в ответ попадет один случайный элемент. 
-В `buttons([...])` переданные значения разворачиваются в кнопки. Подробнее про [buttons()](#buttonsitems-defaults).
+
+Чтобы сделать ответ более разнообразным можно передавать в `reply` массивы значений:`${[item1, item2, ...]}`.
+При рендеренге из массива выберется один случайный элемент:
+```js
+const {reply, buttons} = require('alice-renderer');
+
+reply`
+  ${['Привет', 'Здор+ово']}! Как дел+а?
+  ${buttons(['Отлично', 'Супер'])}
+`;
+
+/*
+{
+  text: 'Здорово! Как дела?',
+  tts: 'Здор+ово! Как дел+а?',
+  buttons: [
+    {title: 'Отлично', hide: true},
+    {title: 'Супер', hide: true},
+  ],
+  end_session: false
+}
+*/
+```
 
 ### Пример с параметрами
-Для проброса параметров удобно использовать стрелочную функцию вместе с `reply`:
+Для проброса параметров удобно использовать [`reply`](#reply) вместе со стрелочной функцией:
 ```js
 const {reply, pause, buttons} = require('alice-renderer');
 
