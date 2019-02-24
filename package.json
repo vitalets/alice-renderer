@@ -2,6 +2,14 @@
   "name": "alice-renderer",
   "version": "0.1.0",
   "description": "Replies renderer for Yandex Alice skills",
+  "author": {
+    "name": "Vitaliy Potapov",
+    "email": "noginsk@rambler.ru"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vitalets/alice-renderer.git"
+  },
   "scripts": {
     "code": "eslint src test",
     "test": "mocha test/setup.js test/specs/*.spec.js",
