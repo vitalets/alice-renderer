@@ -13,12 +13,11 @@
   "scripts": {
     "code": "eslint src test",
     "test": "mocha test/setup.js test/specs/*.spec.js",
-    "test:cov": "nyc --reporter=html npm t && nyc report",
-    "check:cov": "nyc check-coverage --lines 100",
+    "test:cov": "nyc --reporter=html --check-coverage --lines 100 npm t && nyc report",
     "open:cov": "open coverage/index.html",
-    "ci": "run-s code test:cov check:cov",
+    "ci": "run-s code test:cov",
     "toc": "markdown-toc README.md -i",
-    "prerelease": "run-s code test:cov check:cov",
+    "prerelease": "run-s code test:cov",
     "postrelease": "git push --follow-tags --no-verify",
     "release": "npm version $VER && npm publish --access public",
     "release-patch": "VER=patch npm run release",
@@ -30,8 +29,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "run-s code test:cov check:cov"
+      "pre-commit": "lint-staged && npm run test:cov",
+      "pre-push": "run-s code test:cov"
     }
   },
   "lint-staged": {
