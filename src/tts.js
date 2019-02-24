@@ -2,9 +2,12 @@
  * Working with voice part.
  */
 
-const {stringify, removeExtraSpaces} = require('./shared');
+const {stringify, removeExtraSpaces, randomElement} = require('./shared');
 
-const tts = value => ({tts: stringify(value)});
+const tts = value => {
+  value = Array.isArray(value) ? randomElement(value) : value;
+  return {tts: stringify(value)};
+};
 const audio = name => tts(`<speaker audio="alice-${name}.opus">`);
 const effect = name => tts(`<speaker effect="${name}">`);
 const pause = (ms = 500) => tts('- '.repeat(Math.ceil(ms / 75)));

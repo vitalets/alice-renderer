@@ -16,6 +16,13 @@ describe('text', () => {
     assert.equal(res.tts, 'привет');
   });
 
+  it('array value', () => {
+    sinon.stub(Math, 'random').returns(0.9);
+    const res = reply`куку ${text(['1', '2', '3'])}`;
+    assert.equal(res.text, 'куку 3');
+    assert.equal(res.tts, 'куку');
+  });
+
   it('br', () => {
     const res = reply`
       Привет! ${br()} Как ${br(2)}жизнь? :)

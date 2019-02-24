@@ -2,12 +2,15 @@
  * Working with text part.
  */
 
-const {stringify, removeExtraSpaces} = require('./shared');
+const {stringify, removeExtraSpaces, randomElement} = require('./shared');
 
 const BR = '<br>';
 const BR_RE = /\s*<br>\s*/g;
 
-const text = value => ({text: stringify(value)});
+const text = value => {
+  value = Array.isArray(value) ? randomElement(value) : value;
+  return {text: stringify(value)};
+};
 const br = (n = 1) => text(BR.repeat(n));
 const processText = str => replaceNewlines(removeExtraSpaces(removeAccents(str)));
 

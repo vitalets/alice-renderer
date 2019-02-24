@@ -33,4 +33,11 @@ describe('tts', () => {
     assert.equal(res.text, 'привет');
     assert.equal(res.tts, 'прив0ет');
   });
+
+  it('array value', () => {
+    sinon.stub(Math, 'random').returns(0.9);
+    const res = reply`куку ${tts(['1', '2', '3'])}`;
+    assert.equal(res.text, 'куку');
+    assert.equal(res.tts, 'куку 3');
+  });
 });
