@@ -1,6 +1,8 @@
 # alice-renderer
 
 [![Build Status](https://travis-ci.org/vitalets/alice-renderer.svg?branch=master)](https://travis-ci.org/vitalets/alice-renderer)
+[![npm](https://img.shields.io/npm/v/alice-renderer.svg)](https://www.npmjs.com/package/alice-renderer)
+[![license](https://img.shields.io/npm/l/alice-renderer.svg)](https://www.npmjs.com/package/alice-renderer)
 
 Библиотека для формирования [ответов](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/#response) в навыках Алисы. 
 Позволяет в компактной форме записывать текстово-голосовой ответ с добавлением вариативности, аудио-эффектов, кнопок и других кастомизаций.
