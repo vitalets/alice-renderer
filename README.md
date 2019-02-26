@@ -1,6 +1,7 @@
 # alice-renderer
 
 [![Build Status](https://travis-ci.org/vitalets/alice-renderer.svg?branch=master)](https://travis-ci.org/vitalets/alice-renderer)
+[![Coverage Status](https://coveralls.io/repos/github/vitalets/alice-renderer/badge.svg?branch=master)](https://coveralls.io/github/vitalets/alice-renderer?branch=master)
 [![npm](https://img.shields.io/npm/v/alice-renderer.svg)](https://www.npmjs.com/package/alice-renderer)
 [![license](https://img.shields.io/npm/l/alice-renderer.svg)](https://www.npmjs.com/package/alice-renderer)
 
