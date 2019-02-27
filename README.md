@@ -5,9 +5,16 @@
 [![npm](https://img.shields.io/npm/v/alice-renderer.svg)](https://www.npmjs.com/package/alice-renderer)
 [![license](https://img.shields.io/npm/l/alice-renderer.svg)](https://www.npmjs.com/package/alice-renderer)
 
-Библиотека для формирования [ответов](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/#response) в навыках Алисы. 
-Позволяет в компактной форме записывать текстово-голосовой ответ с добавлением вариативности, аудио-эффектов, кнопок и других кастомизаций.
-Использует [tagged template literals](https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/template_strings).
+Библиотека для формирования [ответов](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/#response) в навыках Яндекс Алисы.  
+
+Позволяет:
+* в компактной форме записывать ответ
+* разделять данные на текст и голос (когда требуется)
+* добавлять звуки и аудио-эффекты
+* добавлять вариативность
+* вставлять кнопки-подсказки и форматирование
+
+Основана на использовании [Tagged templates](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals#Tagged_templates).
 
 ## Содержание
 
