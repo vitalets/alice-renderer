@@ -5,7 +5,7 @@
 [![npm](https://img.shields.io/npm/v/alice-renderer.svg)](https://www.npmjs.com/package/alice-renderer)
 [![license](https://img.shields.io/npm/l/alice-renderer.svg)](https://www.npmjs.com/package/alice-renderer)
 
-Библиотека для формирования [ответов](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/#response) в навыках Яндекс Алисы.  
+Node.js библиотека для формирования [ответов](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/#response) в навыках Яндекс Алисы.  
 
 Позволяет:
 * в компактной форме записывать ответ
@@ -51,8 +51,11 @@ npm i alice-renderer
 
 ## Использование
 ### Базовый пример
-В простейшем варианте можно применить тег-функцию [`reply`](#reply) к некоторой строке.
-В результате получим объект с полями `text` и `tts`, где записана переданная строка.
+В простейшем варианте нужно применить тег-функцию [`reply`](#reply) к некоторой строке, заключённой в backticks `` ` ``:
+```js
+reply`строка`;
+```
+В результате получим объект с полями `text` и `tts`, в которых записана переданная строка.
 При этом для текстового представления из строки вырезаются акценты (`+`):
 ```js
 const {reply} = require('alice-renderer');
