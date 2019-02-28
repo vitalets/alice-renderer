@@ -38,4 +38,16 @@ describe('buttons', () => {
       {title: 'Отлично', hide: true},
     ]);
   });
+
+  it('merge several buttons entries in reply', () => {
+    const res = reply`Как дела?
+      ${buttons(['Отлично', 'Супер'])}
+      ${buttons([{title: 'Все ок', hide: false}])}
+    `;
+    assert.deepEqual(res.buttons, [
+      {title: 'Отлично', hide: true},
+      {title: 'Супер', hide: true},
+      {title: 'Все ок', hide: false},
+    ]);
+  });
 });

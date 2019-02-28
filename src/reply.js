@@ -44,7 +44,7 @@ const mergeStringProp = (to, from, prop) => isString(from[prop])
   : null;
 
 const mergeArrayProp = (to, from, prop) => Array.isArray(from[prop])
-  ? to[prop] = (Array.isArray(to[prop]) || []).concat(from[prop])
+  ? to[prop] = (Array.isArray(to[prop]) ? to[prop] : []).concat(from[prop])
   : null;
 
 const textAndTts = value => {
