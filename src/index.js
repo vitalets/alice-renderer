@@ -7,6 +7,7 @@ const {text, br} = require('./text');
 const {tts, audio, effect, pause} = require('./tts');
 const {textTts} = require('./text-tts');
 const {buttons} = require('./buttons');
+const {plural} = require('./plural');
 
 module.exports = {
   reply,
@@ -18,4 +19,5 @@ module.exports = {
   effect,
   pause,
   br,
+  plural,
 };
