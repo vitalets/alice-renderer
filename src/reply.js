@@ -2,7 +2,8 @@
  * Reply implementation.
  */
 
-const {isObject, isString, randomElement, stringify} = require('./shared');
+const {isObject, isString, stringify} = require('./utils');
+const {pick} = require('./userify');
 const {processText} = require('./text');
 const {processTts} = require('./tts');
 
@@ -23,7 +24,7 @@ const reply = (parts, ...params) => {
 
 reply.end = (...args) => Object.assign(reply(...args), {end_session: true});
 
-const arrayToReply = arr => valueToReply(randomElement(arr));
+const arrayToReply = arr => valueToReply(pick(arr));
 const valueToReply = value => isObject(value) ? value : textAndTts(value);
 
 /**

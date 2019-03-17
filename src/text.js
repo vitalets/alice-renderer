@@ -2,13 +2,14 @@
  * Working with text part.
  */
 
-const {stringify, removeExtraSpaces, randomElement} = require('./shared');
+const {stringify, removeExtraSpaces} = require('./utils');
+const {pick} = require('./userify');
 
 const BR = '<br>';
 const BR_RE = /\s*<br>\s*/g;
 
 const text = value => {
-  value = Array.isArray(value) ? randomElement(value) : value;
+  value = Array.isArray(value) ? pick(value) : value;
   return {text: stringify(value)};
 };
 const br = (n = 1) => text(BR.repeat(n));

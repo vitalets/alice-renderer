@@ -2,7 +2,7 @@
  * Buttons
  */
 
-const {isObject} = require('./shared');
+const {isObject} = require('./utils');
 
 const buttons = (items, defaults = {hide: true}) => {
   return {

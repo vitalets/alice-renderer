@@ -38,6 +38,7 @@
     "{src,test}/**/*.js": "eslint"
   },
   "devDependencies": {
+    "await-timeout": "^0.3.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.3",
     "eslint": "^5.6.0",
