@@ -2,8 +2,6 @@
  * User sessions for userify.
  */
 
-const {randomElement} = require('./utils');
-
 // TTL for session (after last message from user), 5 min.
 // Sessions older than ttl will be removed by cleanup process.
 const SESSION_TTL = 5 * 60 * 1000;
@@ -28,28 +26,24 @@ const touch = userId => {
 };
 
 /**
- * Returns not-repeated array element for user.
+ * Gets value for current user with provided key
+ * @param {String} key
+ * @returns {*}
  */
-const userRandomElement = arr => {
-  try {
-    return unsafeUserRandomElement(arr);
-  } catch(e) {
-    // in case of any errors just fallback to regular randomElement
-    return randomElement(arr);
-  }
+const getValue = key => {
+  const session = getOrCreateSession(currentUserId);
+  return session[key];
 };
 
-const unsafeUserRandomElement = arr => {
+/**
+ * Sets value for current user with provided key.
+ * @param {String} key
+ * @param {*} value
+ * @returns {*}
+ */
+const setValue = (key, value) => {
   const session = getOrCreateSession(currentUserId);
-  const key = getKey(arr);
-  const indexes = arr.map((v, index) => index);
-  const usedIndexes = session[key] || [];
-  const unusedIndexes = usedIndexes.length < indexes.length
-    ? indexes.filter(index => !usedIndexes.includes(index))
-    : (usedIndexes.length = 0, indexes);
-  const index = randomElement(unusedIndexes);
-  session[key] = usedIndexes.concat([index]);
-  return arr[index];
+  session[key] = value;
 };
 
 /**
@@ -82,20 +76,13 @@ const cleanup = () => {
 const shouldCleanup  = () => Math.abs(Date.now() - lastCleanup) > exports.CLEANUP_INTERVAL;
 const getSessions = () => sessions;
 
-/**
- * Returns unique key for array instance.
- * Maybe use concat of values (but objects values should be processed)
- * @param {Array} arr
- * @returns {String}
- */
-const getKey = arr => JSON.stringify(arr);
-
 Object.assign(exports, {
   SESSION_TTL,
   CLEANUP_INTERVAL,
   touch,
   setUserId,
   hasUserId,
-  userRandomElement,
+  getValue,
+  setValue,
   getSessions,
 });

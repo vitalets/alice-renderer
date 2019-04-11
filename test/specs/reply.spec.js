@@ -47,6 +47,15 @@ describe('reply', () => {
     assert.equal(res.tts, 'прив0ет');
   });
 
+  it('ignore empty array', () => {
+    const res = reply`Привет! ${[]} Как дел+а?`;
+    assert.deepEqual(res,  {
+      text: 'Привет! Как дела?',
+      tts: 'Привет! Как дел+а?',
+      end_session: false,
+    });
+  });
+
   it('all together', () => {
     sinon.stub(Math, 'random').returns(0.9);
     const res = reply`

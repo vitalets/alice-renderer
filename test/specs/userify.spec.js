@@ -6,50 +6,55 @@ const {hasUserId, getSessions} = sessions;
 
 describe('userify', () => {
 
+  const COUNT = 10;
   const userId = 'user-1';
   const countResponses = (fn, callCount) => {
     return new Array(callCount).fill(true).reduce(acc => {
       const res = fn();
       const prop = res.text || res.tts;
-      acc[prop] = acc[prop] ? acc[prop] + 1 : 1;
+      acc[prop] = (acc[prop] || 0) + 1;
       return acc;
     }, {});
   };
+
+  beforeEach(() => {
+    getSessions().clear();
+  });
 
   describe('wrapped function', () => {
 
     it('array by ref', () => {
       const word = ['Отлично', 'Супер', 'Класс'];
       const fn = () => reply`${word}`;
-      const wrappedFn = () => userify(userId, fn)();
-      const counts = countResponses(wrappedFn, 6);
+      const wrappedFn = userify(userId, fn);
+      const counts = countResponses(wrappedFn, COUNT * word.length);
 
       assert.deepEqual(counts, {
-        ['Отлично']: 2,
-        ['Супер']: 2,
-        ['Класс']: 2,
+        ['Отлично']: COUNT,
+        ['Супер']: COUNT,
+        ['Класс']: COUNT,
       });
     });
 
     it('array by value in reply', () => {
       const fn = () => reply`${['Отлично', 'Супер']}`;
-      const wrappedFn = () => userify(userId, fn)();
-      const counts = countResponses(wrappedFn, 6);
+      const wrappedFn = userify(userId, fn);
+      const counts = countResponses(wrappedFn, COUNT * 2);
 
       assert.deepEqual(counts, {
-        ['Отлично']: 3,
-        ['Супер']: 3,
+        ['Отлично']: COUNT,
+        ['Супер']: COUNT,
       });
     });
 
     it('array by value in text', () => {
       const fn = () => reply`${text(['Отлично', 'Супер'])}`;
-      const wrappedFn = () => userify(userId, fn)();
-      const counts = countResponses(wrappedFn, 6);
+      const wrappedFn = userify(userId, fn);
+      const counts = countResponses(wrappedFn, COUNT * 2);
 
       assert.deepEqual(counts, {
-        ['Отлично']: 3,
-        ['Супер']: 3,
+        ['Отлично']: COUNT,
+        ['Супер']: COUNT,
       });
     });
 
@@ -60,13 +65,13 @@ describe('userify', () => {
         audio('three'),
       ];
       const fn = () => reply`${sound}`;
-      const wrappedFn = () => userify(userId, fn)();
-      const counts = countResponses(wrappedFn, 6);
+      const wrappedFn = userify(userId, fn);
+      const counts = countResponses(wrappedFn, COUNT * sound.length);
 
       assert.deepEqual(counts, {
-        ['<speaker audio="alice-one.opus">']: 2,
-        ['<speaker audio="alice-three.opus">']: 2,
-        ['<speaker audio="alice-two.opus">']: 2,
+        ['<speaker audio="alice-one.opus">']: COUNT,
+        ['<speaker audio="alice-three.opus">']: COUNT,
+        ['<speaker audio="alice-two.opus">']: COUNT,
       });
     });
 
@@ -79,12 +84,50 @@ describe('userify', () => {
 
     it('fallback to random in case of errors', () => {
       const arr = ['Отлично'];
+      // simulate error as circular array
       arr.push(arr);
       const fn = () => reply`${arr}`;
       const wrappedFn = userify(userId, fn);
       const res = wrappedFn();
       assert.equal(typeof res.text, 'string');
     });
+
+    it('should work with single element', () => {
+      const fn = () => reply`${['Отлично']}`;
+      const wrappedFn = userify(userId, fn);
+      const counts = countResponses(wrappedFn, COUNT);
+      assert.deepEqual(counts, {
+        ['Отлично']: COUNT,
+      });
+    });
+
+    it('avoid repeating value after array index reset', () => {
+      const fn = () => reply`${['Отлично', 'Супер']}`;
+      const wrappedFn = userify(userId, fn);
+
+      const res = [];
+      const stub = sinon.stub(Math, 'random');
+      stub.returns(0.1);
+      res.push(wrappedFn());
+      res.push(wrappedFn());
+      stub.returns(0.9);
+      res.push(wrappedFn());
+      res.push(wrappedFn());
+
+      assert.deepEqual(res.map(r => r.text), [
+        'Отлично',
+        'Супер',
+        'Отлично',
+        'Супер',
+      ]);
+    });
+
+    it('proxy non-function value as is', () => {
+      const value = 42;
+      const wrapped = userify(userId, value);
+      assert.equal(wrapped, value);
+    });
+
   });
 
   describe('wrapped object', () => {
@@ -96,24 +139,34 @@ describe('userify', () => {
         bye: () => reply`${['Пока', 'До встречи']}`,
       };
       const wrapped = userify(userId, replies);
-      const countsOk = countResponses(wrapped.ok, 6);
-      const countsBye = countResponses(wrapped.bye, 6);
+      const countsOk = countResponses(wrapped.ok, COUNT * word.length);
+      const countsBye = countResponses(wrapped.bye, COUNT * 2);
 
       assert.deepEqual(countsOk, {
-        ['Отлично']: 2,
-        ['Супер']: 2,
-        ['Класс']: 2,
+        ['Отлично']: COUNT,
+        ['Супер']: COUNT,
+        ['Класс']: COUNT,
       });
 
       assert.deepEqual(countsBye, {
-        ['Пока']: 3,
-        ['До встречи']: 3,
+        ['Пока']: COUNT,
+        ['До встречи']: COUNT,
       });
+    });
+
+    it('proxy non-function props as is', () => {
+      const obj = {
+        prop1: 42,
+        prop2: {}
+      };
+      const wrapped = userify(userId, obj);
+      assert.equal(wrapped.prop1, obj.prop1);
+      assert.equal(wrapped.prop2, obj.prop2);
     });
 
   });
 
-  it('cleanup', async () => {
+  it('session cleanup', async () => {
     sinon.stub(sessions, 'SESSION_TTL').get(() => 50);
     sinon.stub(sessions, 'CLEANUP_INTERVAL').get(() => 100);
     const fn = () => {};

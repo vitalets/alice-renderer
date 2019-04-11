@@ -4,7 +4,7 @@
  */
 
 const {randomElement, isFunction, isObject} = require('./utils');
-const {touch, setUserId, hasUserId, userRandomElement} = require('./sessions');
+const {touch, setUserId, hasUserId, getValue, setValue} = require('./sessions');
 
 const userify = (userId, target) => {
   touch(userId);
@@ -42,7 +42,62 @@ const userifyObj = (userId, obj) => {
  * @param {Array} arr
  */
 const pick = arr => {
-  return hasUserId() ? userRandomElement(arr) : randomElement(arr);
+  if (arr.length <= 1) {
+    return arr[0];
+  } else {
+    return hasUserId() ? userRandomElement(arr) : randomElement(arr);
+  }
+};
+
+/**
+ * Returns not-repeated array element for user.
+ */
+const userRandomElement = arr => {
+  try {
+    return unsafeUserRandomElement(arr);
+  } catch(e) {
+    // in case of any errors just fallback to regular randomElement
+    return randomElement(arr);
+  }
+};
+
+const unsafeUserRandomElement = arr => {
+  const indexes = arr.map((v, index) => index);
+  const key = getKey(arr);
+  const usedIndexes = getValue(key) || [];
+  const excludedIndexes = getExcludedIndexes(indexes, usedIndexes);
+  const possibleIndexes = getPossibleIndexes(indexes, excludedIndexes);
+  const index = randomElement(possibleIndexes);
+  usedIndexes.push(index);
+  setValue(key, usedIndexes);
+  return arr[index];
+};
+
+/**
+ * Returns unique key for array instance.
+ * Maybe use concat of values (but objects values should be processed)
+ * @param {Array} arr
+ * @returns {String}
+ */
+const getKey = arr => JSON.stringify(arr);
+
+const getExcludedIndexes = (indexes, usedIndexes) => {
+  if (usedIndexes.length >= indexes.length) {
+    // keep last used index to avoid possible repeating
+    const lastUsedIndex = usedIndexes[usedIndexes.length - 1];
+    usedIndexes.length = 0;
+    return [lastUsedIndex];
+  } else {
+    return usedIndexes;
+  }
+};
+
+const getPossibleIndexes = (indexes, excludedIndexes) => {
+  if (excludedIndexes.length > 0) {
+    return indexes.filter(index => !excludedIndexes.includes(index));
+  } else {
+    return indexes;
+  }
 };
 
 module.exports = {
