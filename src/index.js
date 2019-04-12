@@ -9,6 +9,7 @@ const {textTts} = require('./text-tts');
 const {buttons} = require('./buttons');
 const {plural} = require('./plural');
 const {userify} = require('./userify');
+const {rand} = require('./rand');
 
 module.exports = {
   reply,
@@ -22,4 +23,5 @@ module.exports = {
   br,
   plural,
   userify,
+  rand,
 };

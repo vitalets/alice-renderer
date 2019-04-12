@@ -7,7 +7,7 @@ const {hasUserId, getSessions} = sessions;
 describe('userify', () => {
 
   const COUNT = 10;
-  const userId = 'user-1';
+  const USER_ID = 'user-1';
   const countResponses = (fn, callCount) => {
     return new Array(callCount).fill(true).reduce(acc => {
       const res = fn();
@@ -26,7 +26,7 @@ describe('userify', () => {
     it('array by ref', () => {
       const word = ['Отлично', 'Супер', 'Класс'];
       const fn = () => reply`${word}`;
-      const wrappedFn = userify(userId, fn);
+      const wrappedFn = userify(USER_ID, fn);
       const counts = countResponses(wrappedFn, COUNT * word.length);
 
       assert.deepEqual(counts, {
@@ -38,7 +38,7 @@ describe('userify', () => {
 
     it('array by value in reply', () => {
       const fn = () => reply`${['Отлично', 'Супер']}`;
-      const wrappedFn = userify(userId, fn);
+      const wrappedFn = userify(USER_ID, fn);
       const counts = countResponses(wrappedFn, COUNT * 2);
 
       assert.deepEqual(counts, {
@@ -49,7 +49,7 @@ describe('userify', () => {
 
     it('array by value in text', () => {
       const fn = () => reply`${text(['Отлично', 'Супер'])}`;
-      const wrappedFn = userify(userId, fn);
+      const wrappedFn = userify(USER_ID, fn);
       const counts = countResponses(wrappedFn, COUNT * 2);
 
       assert.deepEqual(counts, {
@@ -65,7 +65,7 @@ describe('userify', () => {
         audio('three'),
       ];
       const fn = () => reply`${sound}`;
-      const wrappedFn = userify(userId, fn);
+      const wrappedFn = userify(USER_ID, fn);
       const counts = countResponses(wrappedFn, COUNT * sound.length);
 
       assert.deepEqual(counts, {
@@ -75,9 +75,9 @@ describe('userify', () => {
       });
     });
 
-    it('clear userId even if error in fn', () => {
+    it('clear current user id even if error in fn', () => {
       const fn = () => {throw new Error('err');};
-      const wrappedFn = userify(userId, fn);
+      const wrappedFn = userify(USER_ID, fn);
       assert.throws(() => wrappedFn(), /err/);
       assert.equal(hasUserId(), false);
     });
@@ -85,16 +85,16 @@ describe('userify', () => {
     it('fallback to random in case of errors', () => {
       const arr = ['Отлично'];
       // simulate error as circular array
-      arr.push(arr);
+      arr.push({text: 'Супер', arr});
       const fn = () => reply`${arr}`;
-      const wrappedFn = userify(userId, fn);
+      const wrappedFn = userify(USER_ID, fn);
       const res = wrappedFn();
       assert.equal(typeof res.text, 'string');
     });
 
     it('should work with single element', () => {
       const fn = () => reply`${['Отлично']}`;
-      const wrappedFn = userify(userId, fn);
+      const wrappedFn = userify(USER_ID, fn);
       const counts = countResponses(wrappedFn, COUNT);
       assert.deepEqual(counts, {
         ['Отлично']: COUNT,
@@ -103,7 +103,7 @@ describe('userify', () => {
 
     it('avoid repeating value after array index reset', () => {
       const fn = () => reply`${['Отлично', 'Супер']}`;
-      const wrappedFn = userify(userId, fn);
+      const wrappedFn = userify(USER_ID, fn);
 
       const res = [];
       const stub = sinon.stub(Math, 'random');
@@ -124,7 +124,7 @@ describe('userify', () => {
 
     it('proxy non-function value as is', () => {
       const value = 42;
-      const wrapped = userify(userId, value);
+      const wrapped = userify(USER_ID, value);
       assert.equal(wrapped, value);
     });
 
@@ -138,7 +138,7 @@ describe('userify', () => {
         ok: () => reply`${word}`,
         bye: () => reply`${['Пока', 'До встречи']}`,
       };
-      const wrapped = userify(userId, replies);
+      const wrapped = userify(USER_ID, replies);
       const countsOk = countResponses(wrapped.ok, COUNT * word.length);
       const countsBye = countResponses(wrapped.bye, COUNT * 2);
 
@@ -159,7 +159,7 @@ describe('userify', () => {
         prop1: 42,
         prop2: {}
       };
-      const wrapped = userify(userId, obj);
+      const wrapped = userify(USER_ID, obj);
       assert.equal(wrapped.prop1, obj.prop1);
       assert.equal(wrapped.prop2, obj.prop2);
     });
