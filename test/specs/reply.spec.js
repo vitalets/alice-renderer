@@ -56,6 +56,15 @@ describe('reply', () => {
     });
   });
 
+  it('only text', () => {
+    const res = reply`${text('Привет')}`;
+    assert.deepEqual(res,  {
+      text: 'Привет',
+      tts: '',
+      end_session: false,
+    });
+  });
+
   it('all together', () => {
     sinon.stub(Math, 'random').returns(0.9);
     const res = reply`
