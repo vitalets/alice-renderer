@@ -106,14 +106,14 @@ reply`${audio('sounds-game-win-1')} Как дел+а?`;
 const {reply, audio, buttons} = require('alice-renderer');
 
 reply`
-  ${audio('sounds-game-win-1')} Как дел+а?
+  Как дел+а?
   ${buttons(['Отлично', 'Супер'])}
 `;
 
 /*
 {
   text: 'Как дела?',
-  tts: '<speaker audio="alice-sounds-game-win-1.opus"> Как дел+а?',
+  tts: 'Как дел+а?',
   buttons: [
     {title: 'Отлично', hide: true},
     {title: 'Супер', hide: true},
@@ -126,21 +126,16 @@ reply`
 Чтобы сделать ответ более разнообразным можно передавать в `reply` массивы значений:`${[item1, item2, ...]}`.
 При рендеренге из массива выберется один случайный элемент:
 ```js
-const {reply, buttons} = require('alice-renderer');
+const {reply} = require('alice-renderer');
 
 reply`
   ${['Привет', 'Здор+ово']}! Как дел+а?
-  ${buttons(['Отлично', 'Супер'])}
 `;
 
 /*
 {
   text: 'Здорово! Как дела?',
   tts: 'Здор+ово! Как дел+а?',
-  buttons: [
-    {title: 'Отлично', hide: true},
-    {title: 'Супер', hide: true},
-  ],
   end_session: false
 }
 */
