@@ -1,5 +1,5 @@
 
-const {reply, rand, userify, audio} = require('../../src');
+const {reply, rand, userify, audio, configure} = require('../../src');
 const {getSessions} = require('../../src/sessions');
 
 describe('rand', () => {
@@ -87,5 +87,50 @@ describe('rand', () => {
       'Привет!',
       'Привет! Ку-ку',
     ]);
+  });
+
+  describe('config.disableRandom = true', () => {
+    before(() => {
+      configure({disableRandom: true});
+    });
+
+    after(() => {
+      configure({disableRandom: false});
+    });
+
+    it('should return response strictly once of N (not userified)', () => {
+      const fn = () => reply`Привет! ${rand(3, 5, 'Ку-ку')}`;
+      const res = [...Array(9).keys()].map(() => fn().text);
+
+      assert.deepEqual(res, [
+        'Привет!',
+        'Привет!',
+        'Привет! Ку-ку',
+        'Привет!',
+        'Привет!',
+        'Привет! Ку-ку',
+        'Привет!',
+        'Привет!',
+        'Привет! Ку-ку',
+      ]);
+    });
+
+    it('should return response strictly once of N (userified)', () => {
+      const fn = () => reply`Привет! ${rand(3, 5, 'Ку-ку')}`;
+      const wrappedFn = userify(USER_ID, fn);
+      const res = [...Array(9).keys()].map(() => wrappedFn().text);
+
+      assert.deepEqual(res, [
+        'Привет!',
+        'Привет!',
+        'Привет! Ку-ку',
+        'Привет!',
+        'Привет!',
+        'Привет! Ку-ку',
+        'Привет!',
+        'Привет!',
+        'Привет! Ку-ку',
+      ]);
+    });
   });
 });

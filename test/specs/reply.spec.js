@@ -1,5 +1,5 @@
 
-const {reply, audio, pause, buttons, br, text, tts} = require('../../src');
+const {reply, audio, pause, buttons, br, text, tts, configure} = require('../../src');
 
 describe('reply', () => {
   it('render string', () => {
@@ -98,6 +98,33 @@ describe('reply', () => {
       text: '',
       tts: '',
       end_session: false,
+    });
+  });
+
+  describe('config.disableRandom = true', () => {
+    before(() => {
+      configure({disableRandom: true});
+    });
+
+    after(() => {
+      configure({disableRandom: false});
+    });
+
+    it('always return first element if config.disableRandom = true', () => {
+      const res = [
+        reply`${['Привет', 'Здор+ово']}`,
+        reply`${['Привет', 'Здор+ово']}`,
+        reply`${['Привет', 'Здор+ово']}`,
+        reply`${['Привет', 'Здор+ово']}`,
+        reply`${['Привет', 'Здор+ово']}`,
+      ].map(res => res.text);
+      assert.deepEqual(res,  [
+        'Привет',
+        'Привет',
+        'Привет',
+        'Привет',
+        'Привет',
+      ]);
     });
   });
 });

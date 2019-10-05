@@ -1,8 +1,17 @@
 /**
  * Rand.
+ * Better name: onceOf
  */
 
 const {hasUserId, getValue, setValue} = require('./sessions');
+const {config} = require('./configure');
+const {userify} = require('./userify');
+
+/**
+ * This user is used only in disableRandom mode in non-userified call.
+ * It is required to put somewhere calls count to get reproducable results.
+ */
+const FAKE_USER_ID = '_FAKE_USER_ID_';
 
 /**
  * Returns response once in N calls where N is randomly between from and to.
@@ -13,7 +22,12 @@ const {hasUserId, getValue, setValue} = require('./sessions');
  * @returns {String|Object}
  */
 const rand = (from, to, response) => {
-  return hasUserId() ? userifiedRand(from, to, response) : fallback(from, to, response);
+  if (config.disableRandom) {
+    return deterministicRand(from, response);
+  }
+  return hasUserId()
+    ? userifiedRand(from, to, response)
+    : fallback(from, to, response);
 };
 
 /**
@@ -49,6 +63,16 @@ const fallback = (from, to, response) => {
   const avg = 0.5 * (from + to);
   const probability = 1 / avg;
   return Math.random() <= probability ? response : null;
+};
+
+/**
+ * Rand in disableRandom mode.
+ * Returns response once of N calls.
+ */
+const deterministicRand = (N, response) => {
+  return hasUserId()
+    ? userifiedRand(N, N, response)
+    : userify(FAKE_USER_ID, userifiedRand)(N, N, response);
 };
 
 /**

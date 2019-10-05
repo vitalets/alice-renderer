@@ -4,8 +4,9 @@
  * See: https://github.com/vitalets/alice-renderer/issues/1
  */
 
-const {randomElement, isFunction, isObject} = require('./utils');
+const {getRandomElement, isFunction, isObject} = require('./utils');
 const {touch, setUserId, hasUserId, getValue, setValue} = require('./sessions');
+const {config} = require('./configure');
 
 /**
  * Userifies function or all methods of object.
@@ -65,10 +66,10 @@ const userifyObj = (userId, obj) => {
  * @param {Array} arr
  */
 const pick = arr => {
-  if (arr.length <= 1) {
+  if (arr.length <= 1 || config.disableRandom) {
     return arr[0];
   } else {
-    return hasUserId() ? getRandomElementForUser(arr) : randomElement(arr);
+    return hasUserId() ? getRandomElementForUser(arr) : getRandomElement(arr);
   }
 };
 
@@ -80,7 +81,7 @@ const getRandomElementForUser = arr => {
     return getRandomElementForUserUnsafe(arr);
   } catch(e) {
     // in case of any errors just fallback to regular randomElement
-    return randomElement(arr);
+    return getRandomElement(arr);
   }
 };
 
@@ -90,7 +91,7 @@ const getRandomElementForUserUnsafe = arr => {
   const usedIndexes = getValue(key) || [];
   const excludedIndexes = getExcludedIndexes(indexes, usedIndexes);
   const possibleIndexes = getPossibleIndexes(indexes, excludedIndexes);
-  const index = randomElement(possibleIndexes);
+  const index = getRandomElement(possibleIndexes);
   usedIndexes.push(index);
   setValue(key, usedIndexes);
   return arr[index];

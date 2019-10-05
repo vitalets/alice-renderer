@@ -10,6 +10,7 @@ const {buttons} = require('./buttons');
 const {plural} = require('./plural');
 const {userify} = require('./userify');
 const {rand} = require('./rand');
+const {configure} = require('./configure');
 
 module.exports = {
   reply,
@@ -24,4 +25,5 @@ module.exports = {
   plural,
   userify,
   rand,
+  configure,
 };
