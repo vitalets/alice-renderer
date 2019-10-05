@@ -82,4 +82,22 @@ describe('reply', () => {
       end_session: false,
     });
   });
+
+  it('end', () => {
+    const res = reply.end`Здор+ово`;
+    assert.deepEqual(res,  {
+      text: 'Здорово',
+      tts: 'Здор+ово',
+      end_session: true,
+    });
+  });
+
+  it('empty string', () => {
+    const res = reply``;
+    assert.deepEqual(res,  {
+      text: '',
+      tts: '',
+      end_session: false,
+    });
+  });
 });

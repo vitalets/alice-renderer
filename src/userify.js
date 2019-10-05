@@ -108,11 +108,7 @@ const getExcludedIndexes = (indexes, usedIndexes) => {
 };
 
 const getPossibleIndexes = (indexes, excludedIndexes) => {
-  if (excludedIndexes.length > 0) {
-    return indexes.filter(index => !excludedIndexes.includes(index));
-  } else {
-    return indexes;
-  }
+  return indexes.filter(index => !excludedIndexes.includes(index));
 };
 
 /**

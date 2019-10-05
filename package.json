@@ -18,6 +18,7 @@
     "ci": "run-s code test:cov",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "toc": "markdown-toc README.md -i",
+    "stryker": "stryker run",
     "prerelease": "run-s code test:cov",
     "postrelease": "git push --follow-tags --no-verify",
     "release": "npm version $VER && npm publish --access public",
@@ -38,6 +39,10 @@
     "{src,test}/**/*.js": "eslint"
   },
   "devDependencies": {
+    "@stryker-mutator/core": "^2.1.0",
+    "@stryker-mutator/javascript-mutator": "^2.1.0",
+    "@stryker-mutator/mocha-framework": "^2.1.0",
+    "@stryker-mutator/mocha-runner": "^2.1.0",
     "await-timeout": "^0.6.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.6",

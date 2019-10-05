@@ -1,5 +1,5 @@
 /**
- * User sessions for userify.
+ * In-memory user sessions for storing userified data.
  */
 
 // TTL for session (after last message from user), 5 min.
@@ -8,6 +8,7 @@ const SESSION_TTL = 5 * 60 * 1000;
 const CLEANUP_INTERVAL = 60 * 1000;
 
 const sessions = new Map();
+// Global value for userId.
 let currentUserId = null;
 let lastCleanup = 0;
 

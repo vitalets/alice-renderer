@@ -83,13 +83,14 @@ describe('userify', () => {
     });
 
     it('fallback to random in case of errors', () => {
+      sinon.stub(Math, 'random').returns(0.1);
       const arr = ['Отлично'];
       // simulate error as circular array
       arr.push({text: 'Супер', arr});
       const fn = () => reply`${arr}`;
       const wrappedFn = userify(USER_ID, fn);
       const res = wrappedFn();
-      assert.equal(typeof res.text, 'string');
+      assert.equal(res.text, 'Отлично');
     });
 
     it('should work with single element', () => {

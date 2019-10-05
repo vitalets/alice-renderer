@@ -7,13 +7,20 @@ const {pick} = require('./userify');
 const {processText} = require('./text');
 const {processTts} = require('./tts');
 
-const reply = (parts, ...params) => {
-  const result = parts.reduce((res, part, index) => {
-    const partReply = textAndTts(part);
-    const param = params[index];
-    const paramReply = Array.isArray(param) ? arrayToReply(param) : valueToReply(param);
-    return merge(res, partReply, paramReply);
-  }, {text: '', tts: ''});
+/**
+ * String literal function for building reply.
+ *
+ * @param {Array} stringParts
+ * @param {Array} injectedValues
+ * @returns {*}
+ */
+const reply = (stringParts, ...injectedValues) => {
+  const result = stringParts.reduce((res, stringPart, index) => {
+    const stringPartReply = valueToReply(stringPart);
+    const injectedValue = getInjectedValue(injectedValues[index]);
+    const injectedValueReply = isObject(injectedValue) ? injectedValue : valueToReply(injectedValue);
+    return merge(res, stringPartReply, injectedValueReply);
+  }, {});
 
   result.text = processText(result.text);
   result.tts = processTts(result.tts);
@@ -22,10 +29,9 @@ const reply = (parts, ...params) => {
   return result;
 };
 
-reply.end = (...args) => Object.assign(reply(...args), {end_session: true});
-
-const arrayToReply = arr => valueToReply(pick(arr));
-const valueToReply = value => isObject(value) ? value : textAndTts(value);
+reply.end = (...args) => {
+  return Object.assign(reply(...args), {end_session: true});
+};
 
 /**
  * Merges reply objects by concatenating `text`, `tts` and `buttons` props.
@@ -40,17 +46,28 @@ const merge = (...replies) => {
   }, {});
 };
 
-const mergeStringProp = (to, from, prop) => isString(from[prop])
-  ? to[prop] = `${to[prop] || ''}${from[prop]}`
-  : null;
+const mergeStringProp = (to, from, prop) => {
+  return isString(from[prop])
+    ? to[prop] = `${to[prop] || ''}${from[prop]}`
+    : null;
+};
 
-const mergeArrayProp = (to, from, prop) => Array.isArray(from[prop])
-  ? to[prop] = (Array.isArray(to[prop]) ? to[prop] : []).concat(from[prop])
-  : null;
+const mergeArrayProp = (to, from, prop) => {
+  return Array.isArray(from[prop])
+    ? to[prop] = (Array.isArray(to[prop]) ? to[prop] : []).concat(from[prop])
+    : null;
+};
 
-const textAndTts = value => {
+const getInjectedValue = value => {
+  return Array.isArray(value) ? pick(value) : value;
+};
+
+const valueToReply = value => {
   const str = stringify(value);
-  return {text: str, tts: str};
+  return {
+    text: str,
+    tts: str
+  };
 };
 
 module.exports = {
