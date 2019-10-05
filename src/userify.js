@@ -1,11 +1,19 @@
 /**
  * Userify.
+ *
  * See: https://github.com/vitalets/alice-renderer/issues/1
  */
 
 const {randomElement, isFunction, isObject} = require('./utils');
 const {touch, setUserId, hasUserId, getValue, setValue} = require('./sessions');
 
+/**
+ * Userifies function or all methods of object.
+ *
+ * @param userId
+ * @param target
+ * @returns {*}
+ */
 const userify = (userId, target) => {
   touch(userId);
   return isFunction(target)
@@ -15,6 +23,13 @@ const userify = (userId, target) => {
       : target;
 };
 
+/**
+ * Userifies function.
+ *
+ * @param userId
+ * @param fn
+ * @returns {Function}
+ */
 const userifyFn = (userId, fn) => {
   return (...args) => {
     try {
@@ -26,6 +41,13 @@ const userifyFn = (userId, fn) => {
   };
 };
 
+/**
+ * Userifies all methods of object.
+ *
+ * @param userId
+ * @param obj
+ * @returns {*}
+ */
 const userifyObj = (userId, obj) => {
   return new Proxy(obj, {
     get: (obj, prop) => {
@@ -37,31 +59,32 @@ const userifyObj = (userId, obj) => {
 };
 
 /**
- * Picks random element from array without repeating to current userId.
- * If no userId set - just picks random element as Math.random().
+ * Picks random element from array:
+ * If userId set - elements are not repeated.
+ * If no userId set - just picks random element.
  * @param {Array} arr
  */
 const pick = arr => {
   if (arr.length <= 1) {
     return arr[0];
   } else {
-    return hasUserId() ? userRandomElement(arr) : randomElement(arr);
+    return hasUserId() ? getRandomElementForUser(arr) : randomElement(arr);
   }
 };
 
 /**
  * Returns not-repeated array element for user.
  */
-const userRandomElement = arr => {
+const getRandomElementForUser = arr => {
   try {
-    return unsafeUserRandomElement(arr);
+    return getRandomElementForUserUnsafe(arr);
   } catch(e) {
     // in case of any errors just fallback to regular randomElement
     return randomElement(arr);
   }
 };
 
-const unsafeUserRandomElement = arr => {
+const getRandomElementForUserUnsafe = arr => {
   const indexes = arr.map((v, index) => index);
   const key = getKey(arr);
   const usedIndexes = getValue(key) || [];
@@ -73,17 +96,9 @@ const unsafeUserRandomElement = arr => {
   return arr[index];
 };
 
-/**
- * Returns unique key for array instance.
- * Maybe use concat of values (but objects values should be processed)
- * @param {Array} arr
- * @returns {String}
- */
-const getKey = arr => JSON.stringify(arr);
-
 const getExcludedIndexes = (indexes, usedIndexes) => {
   if (usedIndexes.length >= indexes.length) {
-    // keep last used index to avoid possible repeating
+    // keep last used index to avoid possible repeating after clearing usedIndexes
     const lastUsedIndex = usedIndexes[usedIndexes.length - 1];
     usedIndexes.length = 0;
     return [lastUsedIndex];
@@ -99,6 +114,14 @@ const getPossibleIndexes = (indexes, excludedIndexes) => {
     return indexes;
   }
 };
+
+/**
+ * Returns unique key for array instance.
+ * Maybe use concat of values (but objects values should be processed)
+ * @param {Array} arr
+ * @returns {String}
+ */
+const getKey = arr => JSON.stringify(arr);
 
 module.exports = {
   userify,
