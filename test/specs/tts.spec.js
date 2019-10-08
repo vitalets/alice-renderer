@@ -23,7 +23,7 @@ describe('tts', () => {
   it('pause', () => {
     const res = reply`${pause()} Привет ${pause(200)}`;
     assert.equal(res.text, 'Привет');
-    assert.equal(res.tts, '- - - - - - - Привет - - -');
+    assert.equal(res.tts, 'sil <[500]> Привет sil <[200]>');
   });
 
   it('falsy values', () => {
