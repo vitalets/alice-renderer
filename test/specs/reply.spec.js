@@ -96,7 +96,7 @@ describe('reply', () => {
     });
   });
 
-  it('end', () => {
+  it('end session', () => {
     const res = reply.end`Здор+ово`;
     assert.deepEqual(res,  {
       text: 'Здорово',
