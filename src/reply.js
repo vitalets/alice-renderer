@@ -35,27 +35,35 @@ reply.end = (...args) => {
 
 /**
  * Merges reply objects by concatenating `text`, `tts` and `buttons` props.
- * @param {Array<{text, tts, buttons}>} replies
+ *
+ * @param {Array<{text, tts, buttons, ...}>} objects
  */
-const merge = (...replies) => {
-  return replies.filter(Boolean).reduce((res, rep) => {
-    mergeStringProp(res, rep, 'text');
-    mergeStringProp(res, rep, 'tts');
-    mergeArrayProp(res, rep, 'buttons');
+const merge = (...objects) => {
+  return objects.filter(Boolean).reduce((res, obj) => {
+    Object.keys(obj).forEach(key => mergeProp(res, obj, key));
     return res;
   }, {});
 };
 
-const mergeStringProp = (to, from, prop) => {
-  return isString(from[prop])
-    ? to[prop] = `${to[prop] || ''}${from[prop]}`
-    : null;
-};
-
-const mergeArrayProp = (to, from, prop) => {
-  return Array.isArray(from[prop])
-    ? to[prop] = (Array.isArray(to[prop]) ? to[prop] : []).concat(from[prop])
-    : null;
+/**
+ * Merges particular prop. Uses concatenation for strings and arrays.
+ *
+ * @param {object} to
+ * @param {object} from
+ * @param {string} key
+ */
+const mergeProp = (to, from, key) => {
+  const value = from[key];
+  if (isString(value)) {
+    // string props are concatenated (text, tts)
+    to[key] = `${to[key] || ''}${value}`;
+  } else if (Array.isArray(value)) {
+    // array props are appended to the end (buttons)
+    to[key] = (Array.isArray(to[key]) ? to[key] : []).concat(value);
+  } else {
+    // all other props are copied as is
+    to[key] = from[key];
+  }
 };
 
 const getInjectedValue = value => {

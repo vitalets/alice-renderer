@@ -47,6 +47,19 @@ describe('reply', () => {
     assert.equal(res.tts, 'прив0ет');
   });
 
+  it('allow custom props', () => {
+    const obj = {foo: 42};
+    const res = reply`
+      Привет ${obj}
+    `;
+    assert.deepEqual(res, {
+      text: 'Привет',
+      tts: 'Привет',
+      end_session: false,
+      foo: 42
+    });
+  });
+
   it('ignore empty array', () => {
     const res = reply`Привет! ${[]} Как дел+а?`;
     assert.deepEqual(res,  {
