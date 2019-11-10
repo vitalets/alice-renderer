@@ -11,11 +11,18 @@ const config = {
 
 /**
  * Configure global options.
+ *
  * @param {Object} options
  * @param {Boolean} options.disableRandom
  */
 const configure = options => {
-  Object.assign(config, options);
+  Object.keys(options || {}).forEach(key => {
+    if (config.hasOwnProperty(key)) {
+      config[key] = options[key];
+    } else {
+      throw new Error(`Unknown option: ${key}`);
+    }
+  });
 };
 
 module.exports = {
