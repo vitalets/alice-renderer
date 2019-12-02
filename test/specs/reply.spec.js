@@ -2,8 +2,10 @@
 const {reply, audio, pause, buttons, br, text, tts, configure} = require('../../src');
 
 describe('reply', () => {
-  it('render string', () => {
-    const res = reply`Здор+ово`;
+  it('render string (remove spaces)', () => {
+    const res = reply`
+      Здор+ово
+    `;
     assert.deepEqual(res,  {
       text: 'Здорово',
       tts: 'Здор+ово',
@@ -22,14 +24,34 @@ describe('reply', () => {
   });
 
   it('nested reply', () => {
-    const res1 = reply`Здор+ово!\n`;
-    const res2 = reply`${res1} Как дел+а?`;
+    const res1 = reply`
+      Здор+ово!
+    `;
+    const res2 = reply`
+      ${res1} Как дел+а?
+    `;
     assert.deepEqual(res2,  {
       text: 'Здорово! Как дела?',
       tts: 'Здор+ово! Как дел+а?',
       end_session: false,
     });
   });
+
+  it('nested reply with br', () => {
+    const res1 = reply`
+      Здор+ово!${br()}
+    `;
+    const res2 = reply`
+      ${res1}
+      Как дел+а?
+    `;
+    assert.deepEqual(res2,  {
+      text: 'Здорово! Как дела?',
+      tts: 'Здор+ово! Как дел+а?',
+      end_session: false,
+    });
+  });
+
 
   it('spaces', () => {
     const res = reply`  Привет
