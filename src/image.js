@@ -25,7 +25,7 @@ const hasOriginalDescription = Symbol('hasOriginalDescription');
 const image = (imageId, {title, description, button} = {}) => {
   const card = {
     type: 'BigImage',
-    imageId,
+    image_id: imageId,
   };
   if (title !== undefined) {
     card.title = truncate(title, MAX_TITLE_LENGTH);

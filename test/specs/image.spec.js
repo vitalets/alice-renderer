@@ -10,7 +10,7 @@ describe('image', () => {
     assert.equal(res.text, text);
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: text,
     });
   });
@@ -23,7 +23,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: 'Привет',
       description: text,
     });
@@ -37,7 +37,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: text,
       description: 'Привет',
     });
@@ -51,7 +51,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: '',
       description: text,
     });
@@ -65,7 +65,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: 'Привет',
       description: text,
     });
@@ -79,7 +79,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: `${text.substr(0, 125)}...`,
       description: 'Привет',
     });
@@ -95,7 +95,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: titleChunk,
       description: `${descriptionChunk.substr(0, 253)}...`,
     });
@@ -111,7 +111,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: 'Привет',
       description: `${text.substr(0, 253)}...`,
     });
@@ -127,7 +127,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: `${text.substr(0, 125)}...`,
       description: 'Привет',
     });
@@ -142,7 +142,7 @@ describe('image', () => {
     assert.equal(res.text, text);
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: 'куку',
       description: 'Привет',
     });
@@ -158,7 +158,7 @@ describe('image', () => {
     assert.equal(res.text, 'Привет! Как дела?');
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: 'Привет! Как дела?',
     });
   });
@@ -171,7 +171,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: `${title.substr(0, 125)}...`,
       description: 'Привет',
     });
@@ -185,7 +185,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: 'Привет',
       description: `${description.substr(0, 253)}...`,
     });
@@ -202,7 +202,7 @@ describe('image', () => {
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',
-      imageId: '1234567/xxx',
+      image_id: '1234567/xxx',
       title: 'Привет',
       button: {
         text: 'Кнопка'
