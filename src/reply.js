@@ -6,6 +6,7 @@ const {isObject, isString, stringify} = require('./utils');
 const {pick} = require('./userify');
 const {processText} = require('./text');
 const {processTts} = require('./tts');
+const {updateImageText} = require('./image');
 
 /**
  * String literal function for building reply.
@@ -15,18 +16,20 @@ const {processTts} = require('./tts');
  * @returns {*}
  */
 const reply = (stringParts, ...injectedValues) => {
-  const result = stringParts.reduce((res, stringPart, index) => {
+  const response = stringParts.reduce((res, stringPart, index) => {
     const stringPartReply = valueToReply(stringPart);
     const injectedValue = getInjectedValue(injectedValues[index]);
     const injectedValueReply = isObject(injectedValue) ? injectedValue : valueToReply(injectedValue);
     return merge(res, stringPartReply, injectedValueReply);
   }, {});
 
-  result.text = processText(result.text);
-  result.tts = processTts(result.tts);
-  result.end_session = false;
+  response.text = processText(response.text);
+  response.tts = processTts(response.tts);
+  response.end_session = false;
 
-  return result;
+  updateImageText(response);
+
+  return response;
 };
 
 reply.end = (...args) => {

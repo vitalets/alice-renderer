@@ -11,6 +11,7 @@ const {plural} = require('./plural');
 const {userify} = require('./userify');
 const {rand} = require('./rand');
 const {configure} = require('./configure');
+const {image} = require('./image');
 
 module.exports = {
   reply,
@@ -26,4 +27,5 @@ module.exports = {
   userify,
   rand,
   configure,
+  image,
 };
