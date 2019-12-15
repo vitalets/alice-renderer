@@ -15,7 +15,7 @@ describe('image', () => {
     });
   });
 
-  it('text < 128, originally defined title: write to description', () => {
+  it('text < 128, has original title: write to description', () => {
     const text = 'а'.repeat(128);
     const res = reply`
       ${text}
@@ -29,7 +29,7 @@ describe('image', () => {
     });
   });
 
-  it('text < 128, originally defined description: write to title', () => {
+  it('text < 128, has original description: write to title', () => {
     const text = 'а'.repeat(128);
     const res = reply`
       ${text}
@@ -57,7 +57,7 @@ describe('image', () => {
     });
   });
 
-  it('text 128..256, originally defined title: write to description', () => {
+  it('text 128..256, has original title: write to description', () => {
     const text = 'а'.repeat(256);
     const res = reply`
       ${text}
@@ -71,7 +71,7 @@ describe('image', () => {
     });
   });
 
-  it('text 128..256, originally defined description: write to title', () => {
+  it('text 128..256, has original description: write to title', () => {
     const text = 'а'.repeat(256);
     const res = reply`
       ${text}
@@ -101,7 +101,7 @@ describe('image', () => {
     });
   });
 
-  it('text > 256, originally defined title: write to description',  () => {
+  it('text > 256, has original title: write to description',  () => {
     const titleChunk = 'Ку-ку. Привет!';
     const descriptionChunk = 'А'.repeat(300);
     const text = `${titleChunk} ${descriptionChunk}`;
@@ -117,7 +117,7 @@ describe('image', () => {
     });
   });
 
-  it('text > 256, originally defined description: write to title',  () => {
+  it('text > 256, has original description: write to title',  () => {
     const titleChunk = 'Ку-ку. Привет!';
     const descriptionChunk = 'А'.repeat(300);
     const text = `${titleChunk} ${descriptionChunk}`;
@@ -207,6 +207,22 @@ describe('image', () => {
       button: {
         text: 'Кнопка'
       }
+    });
+  });
+
+  it('write to title and description if they defined as nulls', () => {
+    const titleChunk = 'Ку-ку. Привет!';
+    const descriptionChunk = 'А'.repeat(300);
+    const text = `${titleChunk} ${descriptionChunk}`;
+    const res = reply`
+      ${text}
+      ${image('1234567/xxx', {title: null, description: null})}
+    `;
+    assert.deepEqual(res.card, {
+      type: 'BigImage',
+      image_id: '1234567/xxx',
+      title: `Ку-ку. Привет!`,
+      description: `${descriptionChunk.substr(0, 253)}...`,
     });
   });
 });

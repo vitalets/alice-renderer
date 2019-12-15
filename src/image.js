@@ -17,9 +17,9 @@ const hasOriginalDescription = Symbol('hasOriginalDescription');
  * If title or description is defined - it is not updated by response text.
  *
  * @param {string} imageId
- * @param {string} [title]
- * @param {string} [description]
- * @param {object} [button]
+ * @param {?string} [title]
+ * @param {?string} [description]
+ * @param {?object} [button]
  * @returns {object}
  */
 const image = (imageId, {title, description, button} = {}) => {
@@ -27,11 +27,11 @@ const image = (imageId, {title, description, button} = {}) => {
     type: 'BigImage',
     image_id: imageId,
   };
-  if (title !== undefined) {
+  if (title !== undefined && title !== null) {
     card.title = truncate(title, MAX_TITLE_LENGTH);
     card[hasOriginalTitle] = true;
   }
-  if (description !== undefined) {
+  if (description !== undefined && description !== null) {
     card.description = truncate(description, MAX_DESCRIPTION_LENGTH);
     card[hasOriginalDescription] = true;
   }
