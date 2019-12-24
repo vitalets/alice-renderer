@@ -101,6 +101,20 @@ describe('image', () => {
     });
   });
 
+  it('text > 256: write to title and description (no sentences found)',  () => {
+    const text = `куку${'а'.repeat(300)}`;
+    const res = reply`
+      ${text}
+      ${image('1234567/xxx')}
+    `;
+    assert.deepEqual(res.card, {
+      type: 'BigImage',
+      image_id: '1234567/xxx',
+      title: '',
+      description: `${text.substr(0, 253)}...`,
+    });
+  });
+
   it('text > 256, has original title: write to description',  () => {
     const titleChunk = 'Ку-ку. Привет!';
     const descriptionChunk = 'А'.repeat(300);
