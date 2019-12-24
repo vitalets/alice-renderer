@@ -23,11 +23,11 @@ jobs:
     - run: npm run test:cov
 
     - name: Generate lcov report
-      if: matrix.node == '10.x'
-      run: nyc report --reporter=text-lcov > ./coverage/lcov.info
+      if: matrix.node-version == '10.x'
+      run: npx nyc report --reporter=text-lcov > ./coverage/lcov.info
 
     - name: Coveralls
-      if: matrix.node == '10.x'
+      if: matrix.node-version == '10.x'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
