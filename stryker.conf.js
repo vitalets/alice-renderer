@@ -14,7 +14,8 @@ module.exports = function (config) {
     mutator: {
       name: 'javascript',
       excludedMutations: [
-        'BinaryExpression'
+        'EqualityOperator',
+        'ArithmeticOperator',
       ]
     },
     packageManager: 'npm',

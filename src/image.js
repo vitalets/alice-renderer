@@ -75,12 +75,9 @@ const tryUpdateTitle = (card, text) => {
     return;
   }
 
-  if (text.length <= MAX_TITLE_LENGTH) {
-    card.title = text;
-    return true;
-  } else {
-    card.title = truncate(text, MAX_TITLE_LENGTH);
-  }
+  card.title = truncate(text, MAX_TITLE_LENGTH);
+
+  return text.length <= MAX_TITLE_LENGTH;
 };
 
 const tryUpdateDescription = (card, text) => {
@@ -92,12 +89,9 @@ const tryUpdateDescription = (card, text) => {
     card.title = '';
   }
 
-  if (text.length <= MAX_DESCRIPTION_LENGTH) {
-    card.description = text;
-    return true;
-  } else {
-    card.description = truncate(text, MAX_DESCRIPTION_LENGTH);
-  }
+  card.description = truncate(text, MAX_DESCRIPTION_LENGTH);
+
+  return text.length <= MAX_DESCRIPTION_LENGTH;
 };
 
 const splitToTitleAndDescription = (card, text) => {
