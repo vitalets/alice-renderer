@@ -9,9 +9,10 @@
 Node.js библиотека для формирования [ответов](https://tech.yandex.ru/dialogs/alice/doc/protocol-docpage/#response) в навыках Яндекс Алисы.  
 
 Позволяет:
-* в компактной форме записывать ответ
-* разделять данные на текст и голос
+* компактно записывать ответ
+* разделять данные на текст и голос (там где нужно)
 * добавлять паузы, звуки и аудио-эффекты
+* вставлять изображения
 * добавлять вариативность ответов
 * вставлять кнопки-подсказки
 
@@ -32,6 +33,7 @@ Node.js библиотека для формирования [ответов](ht
   * [buttons(items, [defaults])](#buttonsitems-defaults)
   * [audio(name)](#audioname)
   * [effect(name)](#effectname)
+  * [image(imageId, [options])](#imageimageid-options)
   * [pause([ms])](#pausems)
   * [br([count])](#brcount)
   * [text(value)](#textvalue)
@@ -61,7 +63,7 @@ npm i alice-renderer
 reply`строка`;
 ```
 В результате получим объект с полями `text` и `tts`, в которых записана переданная строка:
-```js
+```json5
 {
   text: 'строка',
   tts: 'строка',
@@ -316,6 +318,65 @@ reply`${effect('hamster')} Я говорю как хомяк`;
 */
 ```
 
+### image(imageId, [options])
+Добавляет изображение BigImage в ответ.
+ 
+**Параметры:**
+  * **imageId** `{String}` - идентификатор изображения, [загруженного в навык](https://yandex.ru/dev/dialogs/alice/doc/resource-upload-docpage/)
+  * **options.title** `{String}` - заголовок изображения
+  * **options.description** `{String}` - описание изображения
+  * **options.button** `{Object}` - действие по клику на изображение
+  
+Если не указывать `title / description` изображения, то эти поля автоматически заполняются из поля `response.text`.
+Логика заполнения следующая: сначала заполняется `title`, если длина превышает максимальную длину тайтла (128 символов),
+то заполняется `description`. Если и в `description` не помещается (256 символов) - 
+то пробуем заполнить и `title` и `description`, остальное обрезаем.
+
+Если изначально указано `title / description` - то они сохраняют исходное значение.
+
+Пример с автозаполнением `title`:
+```js
+reply`
+  Вот моя фотка.
+  ${image('1234567/xxx')}
+`;
+
+/*
+{
+  text: 'Вот моя фотка.',
+  tts: 'Вот моя фотка.',
+  end_session: false,
+  card: {
+    type: 'BigImage',
+    image_id: '1234567/xxx',
+    title: 'Вот моя фотка.',
+  }
+}
+*/
+```
+
+Пример с автозаполнением `description`:
+```js
+reply`
+  Вот моя фотка.
+  ${image('1234567/xxx', { title: 'Заголовок' })}
+`;
+
+/*
+{
+  text: 'Вот моя фотка.',
+  tts: 'Вот моя фотка.',
+  end_session: false,
+  card: {
+    type: 'BigImage',
+    image_id: '1234567/xxx',
+    title: 'Заголовок',
+    description: 'Вот моя фотка.',
+  }
+}
+*/
+```
+
 ### pause([ms])
 Добавляет паузу.  
 **Параметры:**
@@ -327,7 +388,7 @@ reply`Дайте подумать... ${pause()} Вы правы!`;
 /*
 {
   text: 'Дайте подумать. Вы правы!',
-  tts: 'Дайте подумать. - - - Вы правы!',
+  tts: 'Дайте подумать. sil <[500]> Вы правы!',
   end_session: false
 }
 */
