@@ -18,9 +18,7 @@
     "ci": "run-s code test:cov",
     "toc": "markdown-toc README.md -i",
     "stryker": "stryker run",
-    "prerelease": "run-s code test:cov",
-    "postrelease": "git push --follow-tags --no-verify",
-    "release": "npm version $VER && npm publish --access public",
+    "release": "run-s code test:cov && npm version $VER && npm publish && git push --follow-tags --no-verify",
     "release-patch": "VER=patch npm run release",
     "release-minor": "VER=minor npm run release"
   },
