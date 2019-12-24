@@ -19,15 +19,15 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
-    - name: install deps and run tests
-      run: |
-        npm ci
-        npm run test:cov
-      env:
-        CI: true
+    - run: npm ci
+    - run: npm run test:cov
+
+    - name: Generate lcov report
+      if: matrix.node == '10.x'
+      run: nyc report --reporter=text-lcov > ./coverage/lcov.info
 
     - name: Coveralls
+      if: matrix.node == '10.x'
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        node-version: 10.x
