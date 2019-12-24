@@ -23,6 +23,10 @@
     "release-minor": "VER=minor npm run release"
   },
   "main": "src/index.js",
+  "files": [
+    "src/",
+    "README.md"
+  ],
   "engines": {
     "node": ">=8"
   },
