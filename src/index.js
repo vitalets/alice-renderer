@@ -9,7 +9,7 @@ const {textTts} = require('./text-tts');
 const {buttons} = require('./buttons');
 const {plural} = require('./plural');
 const {userify} = require('./userify');
-const {rand} = require('./rand');
+const {onceInRange, rand} = require('./onceInRange');
 const {configure} = require('./configure');
 const {image} = require('./image');
 
@@ -25,6 +25,7 @@ module.exports = {
   br,
   plural,
   userify,
+  onceInRange,
   rand,
   configure,
   image,

@@ -1,16 +1,16 @@
 
-const {reply, rand, userify, audio, configure} = require('../../src');
+const {reply, onceInRange, rand, userify, audio, configure} = require('../../src');
 const {getSessions} = require('../../src/sessions');
 
-describe('rand', () => {
+describe('onceInRange', () => {
   const USER_ID = 'user-1';
 
   beforeEach(() => {
     getSessions().clear();
   });
 
-  it('should output response between min/max calls', () => {
-    const fn = () => reply`Привет! ${rand(3, 5, 'Ку-ку')}`;
+  it('should output response between from...to calls', () => {
+    const fn = () => reply`Привет! ${onceInRange(3, 5, 'Ку-ку')}`;
     const wrappedFn = userify(USER_ID, fn);
     const res = [];
     const stub = sinon.stub(Math, 'random');
@@ -40,7 +40,7 @@ describe('rand', () => {
   });
 
   it('response as reply', () => {
-    const fn = () => reply`Привет! ${rand(1, 1, reply`Ку-ку ${audio('one')}`)}`;
+    const fn = () => reply`Привет! ${onceInRange(1, 1, reply`Ку-ку ${audio('one')}`)}`;
     const wrappedFn = userify(USER_ID, fn);
     const res = wrappedFn();
     assert.deepEqual(res, {
@@ -51,7 +51,7 @@ describe('rand', () => {
   });
 
   it('fallback to random if not userified', () => {
-    const fn = () => reply`Привет! ${rand(1, 2, 'Ку-ку')}`;
+    const fn = () => reply`Привет! ${onceInRange(1, 2, 'Ку-ку')}`;
     const stub = sinon.stub(Math, 'random');
     const res = [];
     stub.returns(0.9);
@@ -72,7 +72,7 @@ describe('rand', () => {
     const obj = {};
     obj.text = 'Ку-ку';
     obj.ref = obj;
-    const fn = () => reply`Привет! ${rand(1, 2, obj)}`;
+    const fn = () => reply`Привет! ${onceInRange(1, 2, obj)}`;
     const wrappedFn = userify(USER_ID, fn);
     const stub = sinon.stub(Math, 'random');
     const res = [];
@@ -99,7 +99,7 @@ describe('rand', () => {
     });
 
     it('should return response strictly once of N (not userified)', () => {
-      const fn = () => reply`Привет! ${rand(3, 5, 'Ку-ку')}`;
+      const fn = () => reply`Привет! ${onceInRange(3, 5, 'Ку-ку')}`;
       const res = [...Array(9).keys()].map(() => fn().text);
 
       assert.deepEqual(res, [
@@ -116,7 +116,7 @@ describe('rand', () => {
     });
 
     it('should return response strictly once of N (userified)', () => {
-      const fn = () => reply`Привет! ${rand(3, 5, 'Ку-ку')}`;
+      const fn = () => reply`Привет! ${onceInRange(3, 5, 'Ку-ку')}`;
       const wrappedFn = userify(USER_ID, fn);
       const res = [...Array(9).keys()].map(() => wrappedFn().text);
 
@@ -133,4 +133,13 @@ describe('rand', () => {
       ]);
     });
   });
+
+  it('rand() still work but shows warning', () => {
+    sinon.spy(console, 'warn');
+    sinon.stub(Math, 'random').returns(0.9);
+    const res = reply`Привет ${rand(3, 5, 'Ку-ку')}`;
+    assert.equal(res.text, 'Привет');
+    sinon.assert.calledWith(console.warn, 'rand() is deprecated and renamed to onceInRange()');
+  });
+
 });

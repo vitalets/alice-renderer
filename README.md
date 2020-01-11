@@ -41,7 +41,7 @@ Node.js библиотека для формирования [ответов](ht
   * [textTts(textValue, ttsValue)](#textttstextvalue-ttsvalue)
   * [plural(number, one, two, five)](#pluralnumber-one-two-five)
   * [userify(userId, target)](#userifyuserid-target)
-  * [rand(from, to, response)](#randfrom-to-response)
+  * [onceInRange(from, to, response)](#onceinrangefrom-to-response)
   * [configure(options)](#configureoptions)
 - [Рецепты](#%D1%80%D0%B5%D1%86%D0%B5%D0%BF%D1%82%D1%8B)
   * [Вариативность через массивы](#%D0%B2%D0%B0%D1%80%D0%B8%D0%B0%D1%82%D0%B8%D0%B2%D0%BD%D0%BE%D1%81%D1%82%D1%8C-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D1%8B)
@@ -602,8 +602,14 @@ const userReplies = userify(userId, replies);
 userReplies.success();
 ```  
 
-### rand(from, to, response)
-Возвращает заданный ответ раз `N` вызовов, где `from` <= `N` <= `to`.
+### onceInRange(from, to, response)
+Возвращает заданный ответ один раз за `N` вызовов, где `N` лежит в диапазоне `(from, to)`.
+Например, чтобы раз в 3 - 5 вызовов добавлять в ответ `"Вы классно отвечаете на вопросы!"`, можно написать так:
+```js
+reply`
+  ${onceInRange(3, 5, 'Вы классно отвечаете на вопросы!')}
+`;
+```
 Используется совместно с `userify` для повышения вариативности.
   
 **Параметры:**
@@ -614,13 +620,12 @@ userReplies.success();
 **Возвращает:**
   * `{String|Object}`
 
-Например, чтобы раз в 3 - 5 вызовов добавлять в текст `"Вы классно отвечаете на вопросы!"`:
 ```js
 const { reply, userify, rand } = require('alice-renderer');
 
 const replySuccess = () => reply`
   Правильно!
-  ${rand(3, 5, 'Вы классно отвечаете на вопросы!')}
+  ${onceInRange(3, 5, 'Вы классно отвечаете на вопросы!')}
 `;
 const userReplySuccess = userify(userId, replySuccess);
 

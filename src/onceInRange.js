@@ -1,6 +1,5 @@
 /**
- * Rand.
- * Better name: onceOf
+ * onceInRange.
  */
 
 const {hasUserId, getValue, setValue} = require('./sessions');
@@ -21,28 +20,32 @@ const FAKE_USER_ID = '_FAKE_USER_ID_';
  * @param {String|Object} response
  * @returns {String|Object}
  */
-const rand = (from, to, response) => {
+const onceInRange = (from, to, response) => {
   if (config.disableRandom) {
-    return deterministicRand(from, response);
+    return onceInFixed(from, response);
   }
-  return hasUserId()
-    ? userifiedRand(from, to, response)
-    : fallback(from, to, response);
+  if (hasUserId()) {
+    try {
+      return tryGetResponse(from, to, response);
+    } catch (e) {
+      // todo: throw in debugMode
+    }
+  }
+  return fallback(from, to, response);
 };
 
 /**
- * Returns userified rand or fallback in case of error.
+ * Returns response once in N calls.
+ * Used in disableRandom mode.
  */
-const userifiedRand = (from, to, response) => {
-  try {
-    return userifiedRandUnsafe(from, to, response);
-  } catch(e) {
-    // in case of any errors use fallback
-    return fallback(from, to, response);
-  }
+const onceInFixed = (N, response) => {
+  return hasUserId()
+    ? tryGetResponse(N, N, response)
+    // FAKE_USER_ID is needed to store number of calls for each key
+    : userify(FAKE_USER_ID, tryGetResponse)(N, N, response);
 };
 
-const userifiedRandUnsafe = (from, to, response) => {
+const tryGetResponse = (from, to, response) => {
   const key = getKey(response);
   const remainingCalls = getValue(key) || initRemainingCalls(from, to);
   const newRemainingCalls = remainingCalls - 1;
@@ -63,16 +66,6 @@ const fallback = (from, to, response) => {
   const avg = 0.5 * (from + to);
   const probability = 1 / avg;
   return Math.random() <= probability ? response : null;
-};
-
-/**
- * Rand in disableRandom mode.
- * Returns response once of N calls.
- */
-const deterministicRand = (N, response) => {
-  return hasUserId()
-    ? userifiedRand(N, N, response)
-    : userify(FAKE_USER_ID, userifiedRand)(N, N, response);
 };
 
 /**
@@ -97,5 +90,9 @@ const getKey = obj => {
 };
 
 module.exports = {
-  rand,
+  onceInRange,
+  rand: (...args) => {
+    console.warn('rand() is deprecated and renamed to onceInRange()');
+    return onceInRange(...args);
+  }
 };
