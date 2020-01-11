@@ -10,6 +10,15 @@
     "type": "git",
     "url": "git://github.com/vitalets/alice-renderer.git"
   },
+  "main": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./esm": "./src/index.mjs"
+  },
+  "files": [
+    "src/",
+    "README.md"
+  ],
   "scripts": {
     "code": "eslint src test",
     "test": "mocha test/setup.js test/specs/*.spec.js",
@@ -22,11 +31,6 @@
     "release-patch": "VER=patch npm run release",
     "release-minor": "VER=minor npm run release"
   },
-  "main": "src/index.js",
-  "files": [
-    "src/",
-    "README.md"
-  ],
   "engines": {
     "node": ">=8"
   },
