@@ -25,10 +25,12 @@ describe('text', () => {
 
   it('br', () => {
     const res = reply`
-      Привет! ${br()} Как ${br(2)}жизнь? :)
+      ${br()}
+      Привет!${br()}
+      Как${br(2)}жизнь? :)
       Как  \nдела?
     `;
-    assert.equal(res.text, 'Привет!\nКак\n\nжизнь? :) Как дела?');
+    assert.equal(res.text, '\nПривет!\nКак\n\nжизнь? :) Как дела?');
     assert.equal(res.tts, 'Привет! Как жизнь? :) Как дела?');
   });
 });

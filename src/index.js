@@ -3,7 +3,8 @@
  */
 
 const {reply} = require('./reply');
-const {text, br} = require('./text');
+const {text} = require('./text');
+const {br} = require('./br');
 const {tts, audio, effect, pause} = require('./tts');
 const {textTts} = require('./text-tts');
 const {buttons} = require('./buttons');
@@ -26,7 +27,7 @@ module.exports = {
   plural,
   userify,
   onceInRange,
-  rand,
+  rand, /* deprecated */
   configure,
   image,
 };

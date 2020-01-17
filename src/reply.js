@@ -2,10 +2,9 @@
  * Reply implementation.
  */
 
-const {isObject, isString, stringify} = require('./utils');
+const {isObject, isString, stringify, removeUnneededSpaces, convertNewlinesToSpaces} = require('./utils');
 const {pick} = require('./userify');
-const {processText} = require('./text');
-const {processTts} = require('./tts');
+const {removeAccents} = require('./text');
 const {updateImageText} = require('./image');
 
 /**
@@ -17,14 +16,20 @@ const {updateImageText} = require('./image');
  */
 const reply = (stringParts, ...injectedValues) => {
   const response = stringParts.reduce((res, stringPart, index) => {
-    const stringPartReply = valueToReply(stringPart);
-    const injectedValue = getInjectedValue(injectedValues[index]);
-    const injectedValueReply = isObject(injectedValue) ? injectedValue : valueToReply(injectedValue);
+    // replace '\n' in string parts to allow newlines in IDE
+    const stringPartReply = convertSimpleValueToReply(convertNewlinesToSpaces(stringPart));
+    const injectedValueOrArray = injectedValues[index];
+    const injectedValue = Array.isArray(injectedValueOrArray)
+      ? pick(injectedValueOrArray)
+      : injectedValueOrArray;
+    const injectedValueReply = isObject(injectedValue)
+      ? injectedValue
+      : convertSimpleValueToReply(injectedValue);
     return merge(res, stringPartReply, injectedValueReply);
   }, {});
 
-  response.text = processText(response.text);
-  response.tts = processTts(response.tts);
+  response.text = removeUnneededSpaces(removeAccents(response.text));
+  response.tts = removeUnneededSpaces(response.tts);
   response.end_session = false;
 
   updateImageText(response);
@@ -32,6 +37,12 @@ const reply = (stringParts, ...injectedValues) => {
   return response;
 };
 
+/**
+ * Reply and end session.
+ *
+ * @param {Array} args
+ * @returns {*}
+ */
 reply.end = (...args) => {
   return Object.assign(reply(...args), {end_session: true});
 };
@@ -69,11 +80,7 @@ const mergeProp = (to, from, key) => {
   }
 };
 
-const getInjectedValue = value => {
-  return Array.isArray(value) ? pick(value) : value;
-};
-
-const valueToReply = value => {
+const convertSimpleValueToReply = value => {
   const str = stringify(value);
   return {
     text: str,

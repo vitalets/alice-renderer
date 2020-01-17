@@ -11,7 +11,10 @@
 const stringify = value => (isString(value) || isPrintableNumber(value)) ? String(value) : '';
 const isObject = value => typeof value === 'object' && value !== null;
 const getRandomElement = arr => arr[Math.floor(Math.random() * arr.length)];
-const removeExtraSpaces = str => str.trim().replace(/\s+/g, ' ');
+const removeMultipleSpaces = str => str.replace(/^ +| +$/g, '').replace(/ {2,}/g, ' ');
+const removeSpacesAfterNewline = str => str.replace(/\n /g, '\n');
+const removeUnneededSpaces = str => removeSpacesAfterNewline(removeMultipleSpaces(str));
+const convertNewlinesToSpaces = str => str.replace(/\n+/g, ' ');
 const isPrintableNumber = value => isNumber(value) && !Number.isNaN(value);
 const isNumber = value => typeof value === 'number';
 const isString = value => typeof value === 'string';
@@ -37,6 +40,7 @@ module.exports = {
   isString,
   isFunction,
   getRandomElement,
-  removeExtraSpaces,
+  removeUnneededSpaces,
+  convertNewlinesToSpaces,
   truncate,
 };

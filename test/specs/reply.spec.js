@@ -37,25 +37,24 @@ describe('reply', () => {
     });
   });
 
-  it('nested reply with br', () => {
+  it('nested reply with newlines: removed from string parts but keep from br()', () => {
     const res1 = reply`
-      Здор+ово!${br()}
+      aaa${br()}bbb${br(2)}ccc\nddd\n
     `;
     const res2 = reply`
       ${res1}
-      Как дел+а?
+      qqq
     `;
     assert.deepEqual(res2,  {
-      text: 'Здорово! Как дела?',
-      tts: 'Здор+ово! Как дел+а?',
+      text: 'aaa\nbbb\n\nccc ddd qqq',
+      tts: 'aaa bbb ccc ddd qqq',
       end_session: false,
     });
   });
 
-
-  it('spaces', () => {
+  it('remove multiple spaces', () => {
     const res = reply`  Привет
-      \n\t
+      \n
     `;
     assert.equal(res.text, 'Привет');
     assert.equal(res.tts, 'Привет');
@@ -103,13 +102,13 @@ describe('reply', () => {
   it('all together', () => {
     sinon.stub(Math, 'random').returns(0.9);
     const res = reply`
-      ${audio('sounds-game-win-1')} ${['Привет', 'Здор+ово']}! ${pause(500)} ${br()} Как дел+а?
+      ${audio('sounds-game-win-1')} ${['Привет', 'Здор+ово']}!${pause(500)}${br()}Как дел+а?
       ${text('Хорошо')}${tts('Супер')}.
       ${buttons(['Отлично', 'Супер'])}
     `;
     assert.deepEqual(res,  {
       text: 'Здорово!\nКак дела? Хорошо.',
-      tts: '<speaker audio="alice-sounds-game-win-1.opus"> Здор+ово! sil <[500]> Как дел+а? Супер.',
+      tts: '<speaker audio="alice-sounds-game-win-1.opus"> Здор+ово!sil <[500]> Как дел+а? Супер.',
       buttons: [
         {title: 'Отлично', hide: true},
         {title: 'Супер', hide: true},
