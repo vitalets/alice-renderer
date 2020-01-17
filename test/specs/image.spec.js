@@ -239,4 +239,21 @@ describe('image', () => {
       description: `${descriptionChunk.substr(0, 253)}...`,
     });
   });
+
+  it('itemsList: keep as is', () => {
+    const itemsList = {
+      card: {
+        type: 'ItemsList',
+        items: [],
+      }
+    };
+    const res = reply`
+      ${itemsList}
+      привет
+    `;
+    assert.deepEqual(res.card, {
+      type: 'ItemsList',
+      items: [],
+    });
+  });
 });
