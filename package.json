@@ -12,8 +12,8 @@
   },
   "main": "./src/index.js",
   "exports": {
-    ".": "./src/index.js",
-    "./esm": "./src/index.mjs"
+    "require": "./src/index.js",
+    "import": "./src/index.mjs"
   },
   "files": [
     "src/",
