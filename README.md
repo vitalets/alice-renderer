@@ -339,6 +339,7 @@ reply`${effect('hamster')} Я говорю как хомяк`;
   * **imageId** `{String}` - идентификатор изображения, [загруженного в навык](https://yandex.ru/dev/dialogs/alice/doc/resource-upload-docpage/)
   * **options.title** `{String}` - заголовок изображения
   * **options.description** `{String}` - описание изображения
+  * **options.appendDescription** `{String}` - описание изображения, которое будет добавлено при автозаполнении текстом
   * **options.button** `{Object}` - действие по клику на изображение
   
 Если не указывать `title / description` изображения, то эти поля автоматически заполняются из поля `response.text`.
@@ -390,6 +391,36 @@ reply`
     image_id: '1234567/xxx',
     title: 'Заголовок',
     description: 'Вот моя фотка.',
+  }
+}
+*/
+```
+
+Пример с параметром `appendDescription`. 
+Например, в поле `description` требуется показывать имя автора фото.
+А сам текст под изображением генерится динамически и может иметь разную длину.
+Указав `appendDescription: 'Автор фото: Иван Иванов'`, получим следующее:
+ * если текст под изображением поместился в `title`, то в `description` будет просто `Автор фото: Иван Иванов`
+ * если текст под изображением не поместился в `title`, то часть его перенесется в `description`
+   и к нему через пробел добавится `Автор фото: Иван Иванов`
+```js
+const { reply, image } = require('alice-renderer');
+
+reply`
+  ${getLongText()}
+  ${image('1234567/xxx', { appendDescription: 'Автор фото: Иван Иванов' })}
+`;
+
+/*
+{
+  text: 'long text...',
+  tts: 'long text...',
+  end_session: false,
+  card: {
+    type: 'BigImage',
+    image_id: '1234567/xxx',
+    title: 'long text...',
+    description: 'continue of long text... Автор фото: Иван Иванов',
   }
 }
 */

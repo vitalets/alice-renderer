@@ -6,9 +6,10 @@ const {truncate} = require('./utils');
 const MAX_TITLE_LENGTH = 128;
 const MAX_DESCRIPTION_LENGTH = 256;
 
-// Use symbol to ignore these keys in JSON.stringify
-const hasOriginalTitle = Symbol('hasOriginalTitle');
-const hasOriginalDescription = Symbol('hasOriginalDescription');
+// Use symbols to ignore these keys in JSON.stringify
+const hasInitialTitle = Symbol('hasInitialTitle');
+const hasInitialDescription = Symbol('hasInitialDescription');
+const appendDescriptionSymbol = Symbol('appendDescriptionSymbol');
 
 /**
  * Insert image into response.
@@ -19,25 +20,19 @@ const hasOriginalDescription = Symbol('hasOriginalDescription');
  * @param {string} imageId
  * @param {?string} [title]
  * @param {?string} [description]
+ * @param {?string} [appendDescription] text that will be appended to description field
  * @param {?object} [button]
  * @returns {object}
  */
-const image = (imageId, {title, description, button} = {}) => {
+const image = (imageId, {title, description, appendDescription, button} = {}) => {
   const card = {
     type: 'BigImage',
     image_id: imageId,
   };
-  if (title !== undefined && title !== null) {
-    card.title = truncate(title, MAX_TITLE_LENGTH);
-    card[hasOriginalTitle] = true;
-  }
-  if (description !== undefined && description !== null) {
-    card.description = truncate(description, MAX_DESCRIPTION_LENGTH);
-    card[hasOriginalDescription] = true;
-  }
-  if (button) {
-    card.button = button;
-  }
+  setInitialTitle(card, title);
+  setInitialDescription(card, description);
+  setAppendDescription(card, appendDescription);
+  setButton(card, button);
   return {
     card
   };
@@ -71,7 +66,7 @@ const updateImageText = ({card, text}) => {
 };
 
 const tryUpdateTitle = (card, text) => {
-  if (card[hasOriginalTitle]) {
+  if (card[hasInitialTitle]) {
     return;
   }
 
@@ -81,35 +76,74 @@ const tryUpdateTitle = (card, text) => {
 };
 
 const tryUpdateDescription = (card, text) => {
-  if (card[hasOriginalDescription]) {
+  if (card[hasInitialDescription]) {
     return;
   }
 
-  if (!card[hasOriginalTitle]) {
+  // if title overfilled - clear it and move everything to description
+  if (!card[hasInitialTitle]) {
     card.title = '';
   }
 
-  card.description = truncate(text, MAX_DESCRIPTION_LENGTH);
+  const fullText = getFullText(card, text);
+  card.description = truncate(fullText, MAX_DESCRIPTION_LENGTH);
 
-  return text.length <= MAX_DESCRIPTION_LENGTH;
+  return fullText.length <= MAX_DESCRIPTION_LENGTH;
 };
 
 const splitToTitleAndDescription = (card, text) => {
-  if (card[hasOriginalTitle] || card[hasOriginalDescription]) {
+  if (card[hasInitialTitle] || card[hasInitialDescription]) {
     return;
   }
-
-  const titleMaxChunk = text.substr(0, MAX_TITLE_LENGTH);
+  const fullText = getFullText(card, text);
+  const titleMaxChunk = fullText.substr(0, MAX_TITLE_LENGTH);
   const lastSentenceStartIndex = findLastSentenceStartIndex(titleMaxChunk);
   const titleChunkLength = lastSentenceStartIndex ? lastSentenceStartIndex - 1 : 0;
-  card.title = text.substr(0, titleChunkLength).trim();
-  card.description = truncate(text.substr(titleChunkLength), MAX_DESCRIPTION_LENGTH);
+  card.title = fullText.substr(0, titleChunkLength).trim();
+  card.description = truncate(fullText.substr(titleChunkLength), MAX_DESCRIPTION_LENGTH);
 };
 
 const findLastSentenceStartIndex = str => {
   const strReversed = str.split('').reverse().join('');
   const matches = strReversed.match(/[А-ЯЁ]\s+/);
   return matches ? str.length - matches.index : 0;
+};
+
+/**
+ * Returns full text for image concerning appendDescription property
+ */
+const getFullText = (card, text) => {
+  return card[appendDescriptionSymbol]
+    ? `${text} ${card[appendDescriptionSymbol]}`.trim()
+    : text;
+};
+
+const setInitialTitle = (card, title) => {
+  if (title !== undefined && title !== null) {
+    card.title = truncate(title, MAX_TITLE_LENGTH);
+    card[hasInitialTitle] = true;
+  }
+};
+
+const setInitialDescription = (card, description) => {
+  if (description !== undefined && description !== null) {
+    card.description = truncate(description, MAX_DESCRIPTION_LENGTH);
+    card[hasInitialDescription] = true;
+  }
+};
+
+const setAppendDescription = (card, appendDescription) => {
+  // todo: warn if there are both description and appendDescription
+  if (appendDescription !== undefined && appendDescription !== null && !card[hasInitialDescription]) {
+    card.description = truncate(appendDescription, MAX_DESCRIPTION_LENGTH);
+    card[appendDescriptionSymbol] = card.description;
+  }
+};
+
+const setButton = (card, button) => {
+  if (button) {
+    card.button = button;
+  }
 };
 
 module.exports = {
