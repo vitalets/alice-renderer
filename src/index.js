@@ -10,6 +10,7 @@ const {textTts} = require('./text-tts');
 const {buttons} = require('./buttons');
 const {plural} = require('./plural');
 const {userify} = require('./userify');
+const {select} = require('./select');
 const {onceInRange, rand} = require('./onceInRange');
 const {configure} = require('./configure');
 const {image} = require('./image');
@@ -26,6 +27,7 @@ module.exports = {
   br,
   plural,
   userify,
+  select,
   onceInRange,
   rand, /* deprecated */
   configure,

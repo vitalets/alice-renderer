@@ -1,6 +1,5 @@
-
 const Timeout = require('await-timeout');
-const {reply, userify, audio, text, configure} = require('../../src');
+const {reply, userify, select, audio, text, configure} = require('../../src');
 const sessions = require('../../src/sessions');
 const {hasUserId, getSessions} = sessions;
 
@@ -127,6 +126,19 @@ describe('userify', () => {
       const value = 42;
       const wrapped = userify(USER_ID, value);
       assert.equal(wrapped, value);
+    });
+
+    it('direct call of select', () => {
+      const word = [reply`Отлично`, reply`Супер`, reply`Класс`];
+      const fn = () => select(word, 'key');
+      const wrappedFn = userify(USER_ID, fn);
+      const counts = countResponses(wrappedFn, COUNT * word.length);
+
+      assert.deepEqual(counts, {
+        ['Отлично']: COUNT,
+        ['Супер']: COUNT,
+        ['Класс']: COUNT,
+      });
     });
 
     describe('config.disableRandom = true', () => {

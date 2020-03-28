@@ -3,10 +3,10 @@
  */
 
 const {stringify} = require('./utils');
-const {pick} = require('./userify');
+const {select} = require('./select');
 
 const text = value => {
-  value = Array.isArray(value) ? pick(value) : value;
+  value = Array.isArray(value) ? select(value) : value;
   return {
     text: stringify(value)
   };

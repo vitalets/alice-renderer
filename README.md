@@ -41,6 +41,7 @@ Node.js библиотека для формирования [ответов](ht
   * [textTts(textValue, ttsValue)](#textttstextvalue-ttsvalue)
   * [plural(number, one, two, five)](#pluralnumber-one-two-five)
   * [userify(userId, target)](#userifyuserid-target)
+  * [select(array, key)](#selectarray-key)
   * [onceInRange(from, to, response)](#onceinrangefrom-to-response)
   * [configure(options)](#configureoptions)
 - [Рецепты](#%D1%80%D0%B5%D1%86%D0%B5%D0%BF%D1%82%D1%8B)
@@ -632,6 +633,52 @@ const userReplies = userify(userId, replies);
 
 userReplies.success();
 ```  
+
+### select(array, key)
+По кругу выбирает случайные элементы из массива, исключая повторения.
+Неявно это используется при выборе элементов из массивов внутри reply.
+Но явный вызов тоже иногда полезен.
+Например, если нужно давать неповторяющиеся ответы, которые внутри себя содержат вариативность.
+
+**Параметры:**
+  * **array** `{Array}` - массив значений.
+  * **key** `{String}` - уникальный ключ для хранения использованных индексов этого массива.
+
+**Возвращает:**
+  * `{*}`
+
+Пример:
+```js
+const { reply, userify, select } = require('alice-renderer');
+
+const replySuccess = () => {
+  const useLongAnswer = select([true, false], 'use-long-answer');
+  if (useLongAnswer) {
+    // это отввет содержит вариативность, поэтому просто завернуть в массив уровнем выше нельзя,
+    // т.к. ключ будет каждый праз разный
+    return reply`
+      ${['Отлично', 'Супер', 'Класс']}!
+      Это правильный ответ!
+    `;
+  } else {
+    return reply`
+      Верно!
+    `;
+  }
+};
+
+const userReplySuccess = userify(userId, replySuccess);
+
+userReplySuccess();
+userReplySuccess();
+userReplySuccess();
+
+// => "Супер! Это правильный ответ!"
+// => "Верно!"
+// => "Отлично! Это правильный ответ!"
+// => "Верно!"
+// => "Класс! Это правильный ответ!"
+```
 
 ### onceInRange(from, to, response)
 Возвращает заданный ответ один раз за `N` вызовов, где `N` лежит в диапазоне `(from, to)`.

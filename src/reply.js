@@ -3,7 +3,7 @@
  */
 
 const {isObject, isString, stringify, removeUnneededSpaces, convertNewlinesToSpaces} = require('./utils');
-const {pick} = require('./userify');
+const {select} = require('./select');
 const {removeAccents} = require('./text');
 const {updateImageText} = require('./image');
 
@@ -18,10 +18,10 @@ const reply = (stringParts, ...injectedValues) => {
   const response = stringParts.reduce((res, stringPart, index) => {
     // replace '\n' in string parts to allow newlines in IDE
     const stringPartReply = convertSimpleValueToReply(convertNewlinesToSpaces(stringPart));
-    const injectedValueOrArray = injectedValues[index];
-    const injectedValue = Array.isArray(injectedValueOrArray)
-      ? pick(injectedValueOrArray)
-      : injectedValueOrArray;
+    let injectedValue = injectedValues[index];
+    if (Array.isArray(injectedValue)) {
+      injectedValue = select(injectedValue);
+    }
     const injectedValueReply = isObject(injectedValue)
       ? injectedValue
       : convertSimpleValueToReply(injectedValue);
