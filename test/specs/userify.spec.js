@@ -101,6 +101,20 @@ describe('userify', () => {
       });
     });
 
+    it('key depends on stringified array content', () => {
+      const fn1 = () => reply`${['1', '2']}`;
+      const fn2 = () => reply`${['3', '4']}`;
+      const wrappedFn1 = userify(USER_ID, fn1);
+      const wrappedFn2 = userify(USER_ID, fn2);
+      const res1 = wrappedFn1();
+      wrappedFn2();
+      const res2 = wrappedFn1();
+      // т.к. ключ для индекса генерится по контенту,
+      // то промежуточный вызов wrappedFn2 не должен влиять на результаты wrappedFn1(),
+      // они должны получиться разными между двумя вызовами.
+      assert.notEqual(res1.text, res2.text);
+    });
+
     it('avoid repeating value after array index reset', () => {
       const fn = () => reply`${['Отлично', 'Супер']}`;
       const wrappedFn = userify(USER_ID, fn);

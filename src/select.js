@@ -65,7 +65,7 @@ const getKey = arr => {
   try {
     return JSON.stringify(arr);
   } catch(e) {
-    return null;
+    // in case of error return empty key -> utils.getRandomElement will be used
   }
 };
 
