@@ -11,7 +11,7 @@ const {buttons} = require('./buttons');
 const {plural} = require('./plural');
 const {userify} = require('./userify');
 const {select} = require('./select');
-const {onceInRange, rand} = require('./onceInRange');
+const {onceInRange} = require('./onceInRange');
 const {configure} = require('./configure');
 const {image} = require('./image');
 
@@ -29,7 +29,6 @@ module.exports = {
   userify,
   select,
   onceInRange,
-  rand, /* deprecated */
   configure,
   image,
 };

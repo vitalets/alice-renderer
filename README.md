@@ -699,7 +699,7 @@ reply`
   * `{String|Object}`
 
 ```js
-const { reply, userify, rand } = require('alice-renderer');
+const { reply, userify, onceInRange } = require('alice-renderer');
 
 const replySuccess = () => reply`
   Правильно!

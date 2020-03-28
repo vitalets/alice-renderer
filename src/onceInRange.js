@@ -91,8 +91,4 @@ const getKey = obj => {
 
 module.exports = {
   onceInRange,
-  rand: (...args) => {
-    console.warn('rand() is deprecated and renamed to onceInRange()');
-    return onceInRange(...args);
-  }
 };

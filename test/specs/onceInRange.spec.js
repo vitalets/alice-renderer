@@ -1,5 +1,5 @@
 
-const {reply, onceInRange, rand, userify, audio, configure} = require('../../src');
+const {reply, onceInRange, userify, audio, configure} = require('../../src');
 const {getSessions} = require('../../src/sessions');
 
 describe('onceInRange', () => {
@@ -132,14 +132,6 @@ describe('onceInRange', () => {
         'Привет! Ку-ку',
       ]);
     });
-  });
-
-  it('rand() still work but shows warning', () => {
-    sinon.spy(console, 'warn');
-    sinon.stub(Math, 'random').returns(0.9);
-    const res = reply`Привет ${rand(3, 5, 'Ку-ку')}`;
-    assert.equal(res.text, 'Привет');
-    sinon.assert.calledWith(console.warn, 'rand() is deprecated and renamed to onceInRange()');
   });
 
 });
