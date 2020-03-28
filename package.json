@@ -1,6 +1,6 @@
 {
   "name": "alice-renderer",
-  "version": "0.8.1",
+  "version": "0.9.0",
   "description": "Replies renderer for Yandex Alice skills",
   "author": {
     "name": "Vitaliy Potapov",
