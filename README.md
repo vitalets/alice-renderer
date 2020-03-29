@@ -642,27 +642,30 @@ userReplies.success();
 
 **Параметры:**
   * **array** `{Array}` - массив значений.
-  * **key** `{String}` - уникальный ключ для хранения использованных индексов этого массива.
+  * **key** `{String}` - уникальный ключ для хранения использованных индексов этого массива. 
+    Если не указан, то вычисляется как `JSON.stringify(array)`.
 
 **Возвращает:**
   * `{*}`
 
 Пример:
+Есть два варианта ответа, которые содержат вариативность (вложенные массивы значений).
+Просто положить эти ответы массивом в `reply` нельзя, т.к. ключ вычисляется через `JSON.stringify()` 
+и будет разный при последовательных вызовах.
+
 ```js
 const { reply, userify, select } = require('alice-renderer');
 
 const replySuccess = () => {
-  const useLongAnswer = select([true, false], 'use-long-answer');
-  if (useLongAnswer) {
-    // это отввет содержит вариативность, поэтому просто завернуть в массив уровнем выше нельзя,
-    // т.к. ключ будет каждый праз разный
+  const answerType = select(['answer-success-long', 'answer-success-short']);
+  if (answerType === 'answer-success-long') {
     return reply`
       ${['Отлично', 'Супер', 'Класс']}!
       Это правильный ответ!
     `;
   } else {
     return reply`
-      Верно!
+      ${['Верно', 'Точно']}!
     `;
   }
 };
@@ -672,11 +675,13 @@ const userReplySuccess = userify(userId, replySuccess);
 userReplySuccess();
 userReplySuccess();
 userReplySuccess();
+userReplySuccess();
+userReplySuccess();
 
 // => "Супер! Это правильный ответ!"
 // => "Верно!"
 // => "Отлично! Это правильный ответ!"
-// => "Верно!"
+// => "Точно!"
 // => "Класс! Это правильный ответ!"
 ```
 
