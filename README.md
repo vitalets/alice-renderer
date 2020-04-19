@@ -43,6 +43,7 @@ Node.js библиотека для формирования [ответов](ht
   * [userify(userId, target)](#userifyuserid-target)
   * [select(array, key)](#selectarray-key)
   * [onceInRange(from, to, response)](#onceinrangefrom-to-response)
+  * [once(options, response)](#onceoptions-response)
   * [configure(options)](#configureoptions)
 - [Рецепты](#%D1%80%D0%B5%D1%86%D0%B5%D0%BF%D1%82%D1%8B)
   * [Вариативность через массивы](#%D0%B2%D0%B0%D1%80%D0%B8%D0%B0%D1%82%D0%B8%D0%B2%D0%BD%D0%BE%D1%81%D1%82%D1%8C-%D1%87%D0%B5%D1%80%D0%B5%D0%B7-%D0%BC%D0%B0%D1%81%D1%81%D0%B8%D0%B2%D1%8B)
@@ -686,38 +687,46 @@ userReplySuccess();
 ```
 
 ### onceInRange(from, to, response)
-Возвращает заданный ответ один раз за `N` вызовов, где `N` лежит в диапазоне `(from, to)`.
-Например, чтобы раз в 3 - 5 вызовов добавлять в ответ `"Вы классно отвечаете на вопросы!"`, можно написать так:
-```js
-reply`
-  ${onceInRange(3, 5, 'Вы классно отвечаете на вопросы!')}
-`;
-```
-Используется совместно с `userify` для повышения вариативности.
-  
+DEPRECATED. Используйте `once()` с параметром `{ calls: N }`.
+
+### once(options, response)
+Возвращает заданный ответ не чаще чем 1 раз в заданное кол-во вызовов или секунд.
+
 **Параметры:**
-  * **from** `{Number}` - нижняя граница диапазона
-  * **to** `{Number}` - верхняя граница диапазона
+  * **options.calls** `{Number}` - вернет response не чаще чем 1 раз в заданное кол-во вызовов.
+  * **options.seconds** `{Number}` - вернет response не чаще чем 1 раз в заданное кол-во секунд.
+  * **options.leading** `{Boolean}` - возвращять ли response при первом вызове. по умолчанию `false`.
   * **response** `{String|Object}` - ответ
 
 **Возвращает:**
   * `{String|Object}`
 
+Используется только совместно с `userify`.
+Например, чтобы **раз в 5 вызовов** добавлять `"Вы классно отвечаете на вопросы!"`, можно написать так:
 ```js
-const { reply, userify, onceInRange } = require('alice-renderer');
+const { reply, userify, once } = require('alice-renderer');
 
 const replySuccess = () => reply`
   Правильно!
-  ${onceInRange(3, 5, 'Вы классно отвечаете на вопросы!')}
+  ${once({ calls: 5 }, 'Вы классно отвечаете на вопросы!')}
 `;
-const userReplySuccess = userify(userId, replySuccess);
+const userReplySuccess = userify(userId, replySuccess); // важно применить userify, чтобы сохранять вызовы для текущего пользователя
 
+// => "Правильно!"
 // => "Правильно!"
 // => "Правильно!"
 // => "Правильно!"
 // => "Правильно! Вы классно отвечаете на вопросы!"
 // => "Правильно!"
 // => ...
+```
+
+Либо чтобы добавлять `"Вы классно отвечаете на вопросы!"` не чаще чем **раз в минуту**:
+```js
+reply`
+  Правильно!
+  ${once({ seconds: 60 }, 'Вы классно отвечаете на вопросы!')}
+`;
 ```
 
 ### configure(options)

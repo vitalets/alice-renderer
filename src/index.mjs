@@ -18,5 +18,6 @@ export const plural = renderer.plural;
 export const userify = renderer.userify;
 export const select = renderer.select;
 export const onceInRange = renderer.onceInRange;
+export const once = renderer.once;
 export const configure = renderer.configure;
 export const image = renderer.image;

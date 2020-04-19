@@ -19,8 +19,10 @@ const FAKE_USER_ID = '_FAKE_USER_ID_';
  * @param {Number} to
  * @param {String|Object} response
  * @returns {String|Object}
+ * @deprecated
  */
 const onceInRange = (from, to, response) => {
+  console.warn('onceInRange() is deprecated in favor of once() and will be removed in next release.');
   if (config.disableRandom) {
     return onceInFixed(from, response);
   }

@@ -12,6 +12,7 @@ const {plural} = require('./plural');
 const {userify} = require('./userify');
 const {select} = require('./select');
 const {onceInRange} = require('./onceInRange');
+const {once} = require('./once');
 const {configure} = require('./configure');
 const {image} = require('./image');
 
@@ -28,7 +29,8 @@ module.exports = {
   plural,
   userify,
   select,
-  onceInRange,
+  onceInRange, /* deprecated */
+  once,
   configure,
   image,
 };
