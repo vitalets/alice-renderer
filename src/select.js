@@ -13,13 +13,12 @@ const {hasUserId, getValue, setValue} = require('./sessions');
  * If no userId set - just selects random element.
  *
  * @param {Array} arr
- * @param {String} [key] unique key of array
  */
-const select = (arr, key) => {
+const select = arr => {
   if (arr.length <= 1 || config.disableRandom) {
     return arr[0];
   } else if (hasUserId()) {
-    key = key || getKey(arr);
+    const key = getKey(arr);
     return key ? selectNextElement(arr, key) : getRandomElement(arr);
   } else {
     return getRandomElement(arr);
@@ -65,7 +64,9 @@ const getKey = arr => {
   try {
     return JSON.stringify(arr);
   } catch(e) {
-    // in case of error return empty key -> utils.getRandomElement will be used
+    // in case of error, return empty key to fallback on getRandomElement()
+    // eslint-disable-next-line no-console
+    console.warn(`[renderer]: Can't create key for ${typeof arr}:`, arr);
   }
 };
 

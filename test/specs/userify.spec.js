@@ -144,7 +144,7 @@ describe('userify', () => {
 
     it('direct call of select', () => {
       const word = [reply`Отлично`, reply`Супер`, reply`Класс`];
-      const fn = () => select(word, 'key');
+      const fn = () => select(word);
       const wrappedFn = userify(USER_ID, fn);
       const counts = countResponses(wrappedFn, COUNT * word.length);
 

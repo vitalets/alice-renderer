@@ -41,7 +41,7 @@ Node.js библиотека для формирования [ответов](ht
   * [textTts(textValue, ttsValue)](#textttstextvalue-ttsvalue)
   * [plural(number, one, two, five)](#pluralnumber-one-two-five)
   * [userify(userId, target)](#userifyuserid-target)
-  * [select(array, key)](#selectarray-key)
+  * [select(array)](#selectarray)
   * [onceInRange(from, to, response)](#onceinrangefrom-to-response)
   * [once(options, response)](#onceoptions-response)
   * [configure(options)](#configureoptions)
@@ -635,30 +635,45 @@ const userReplies = userify(userId, replies);
 userReplies.success();
 ```  
 
-### select(array, key)
+### select(array)
 По кругу выбирает случайные элементы из массива, исключая повторения.
 Неявно это используется при выборе элементов из массивов внутри reply.
 Но явный вызов тоже иногда полезен.
 Например, если нужно давать неповторяющиеся ответы, которые внутри себя содержат вариативность.
 
 **Параметры:**
-  * **array** `{Array}` - массив значений.
-  * **key** `{String}` - уникальный ключ для хранения использованных индексов этого массива. 
-    Если не указан, то вычисляется как `JSON.stringify(array)`.
+  * **array** `{Array}` - массив возможных значений.
 
 **Возвращает:**
   * `{*}`
 
 Пример:
-Есть два варианта ответа, которые содержат вариативность (вложенные массивы значений).
-Просто положить эти ответы массивом в `reply` нельзя, т.к. ключ вычисляется через `JSON.stringify()` 
-и будет разный при последовательных вызовах.
+Есть два варианта ответа, которые должны чередоваться:
+```js
+const longAnswer = reply`
+  ${['Отлично', 'Супер', 'Класс']}!
+  Это правильный ответ!
+`;
 
+const shortAnswer = reply`
+  ${['Верно', 'Точно']}!
+`;
+```
+На первый взгляд можно просто положить их еще одним массивом в reply:
+```js
+const answer = reply`
+  ${[ longAnswer, shortAnswer ]}
+`;
+```
+Но это будет работать неправильно, т.к. сами ответы содержат внутри себя вариативность (массивы значений).
+Поэтому ключ для общего массива будет всегда вычисляться разный (это делается через `JSON.stringify()`).
+
+Решить эту проблему можно используя `select()` и вспомогательный массив:
 ```js
 const { reply, userify, select } = require('alice-renderer');
 
 const replySuccess = () => {
-  const answerType = select(['answer-success-long', 'answer-success-short']);
+  const answerType = select([ 'answer-success-long', 'answer-success-short' ]);
   if (answerType === 'answer-success-long') {
     return reply`
       ${['Отлично', 'Супер', 'Класс']}!
