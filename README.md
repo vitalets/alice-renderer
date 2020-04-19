@@ -40,6 +40,7 @@ Node.js библиотека для формирования [ответов](ht
   * [tts(value)](#ttsvalue)
   * [textTts(textValue, ttsValue)](#textttstextvalue-ttsvalue)
   * [plural(number, one, two, five)](#pluralnumber-one-two-five)
+  * [enumerate(arr)](#enumeratearr)
   * [userify(userId, target)](#userifyuserid-target)
   * [select(array)](#selectarray)
   * [onceInRange(from, to, response)](#onceinrangefrom-to-response)
@@ -571,6 +572,34 @@ getResponse(1); // response.text = "У вас 1 правильный ответ"
 getResponse(2); // response.text = "У вас 2 правильных ответа"
 getResponse(5); // response.text = "У вас 5 правильных ответов"
 getResponse(121); // response.text = "У вас 121 правильный ответ"
+```
+
+### enumerate(arr)
+Перечисляет не-пустые значения в строку, добавляя "или" перед последним. Это более человеко-привычное перечисление.
+**Параметры:**
+  * **arr** `{array}` - список элементов.
+
+**Возвращает:**
+  * `{string}`
+
+Пример:
+```js
+const { reply, enumerate } = require('alice-renderer');
+
+const getActions = hasHints => reply`
+  Вы можете 
+  ${enumerate([
+    'ответить', 
+    'сдаться', 
+    hasHints && 'взять подсказку',
+  ])}
+`;
+
+// если подсказку можно брать:
+getActions(true) // => "Вы можете ответить, сдаться или взять подсказку"
+
+// если подсказку нельзя брать:
+getActions(false) // => "Вы можете ответить или сдаться"
 ```
 
 ### userify(userId, target)

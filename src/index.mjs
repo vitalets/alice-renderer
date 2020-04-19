@@ -21,3 +21,4 @@ export const onceInRange = renderer.onceInRange;
 export const once = renderer.once;
 export const configure = renderer.configure;
 export const image = renderer.image;
+export const enumerate = renderer.enumerate;

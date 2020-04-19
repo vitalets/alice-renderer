@@ -15,6 +15,7 @@ const {onceInRange} = require('./onceInRange');
 const {once} = require('./once');
 const {configure} = require('./configure');
 const {image} = require('./image');
+const {enumerate} = require('./enumerate');
 
 module.exports = {
   reply,
@@ -33,4 +34,5 @@ module.exports = {
   once,
   configure,
   image,
+  enumerate,
 };
