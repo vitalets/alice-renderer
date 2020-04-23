@@ -5,17 +5,17 @@
  */
 
 const {isFunction, isObject} = require('./utils');
-const {touch, setUserId} = require('./sessions');
+const {getOrCreateSession, setUserId} = require('./sessions');
 
 /**
  * Userifies function or all methods of object.
  *
- * @param userId
- * @param target
- * @returns {*}
+ * @param {string} userId
+ * @param {function|object} target
+ * @returns {function|object}
  */
 const userify = (userId, target) => {
-  touch(userId);
+  void getOrCreateSession(userId);
   return isFunction(target)
     ? userifyFn(userId, target)
     : isObject(target)

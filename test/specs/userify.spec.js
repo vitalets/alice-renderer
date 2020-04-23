@@ -1,7 +1,6 @@
-const Timeout = require('await-timeout');
 const {reply, userify, select, audio, text, configure} = require('../../src');
 const sessions = require('../../src/sessions');
-const {hasUserId, getSessions} = sessions;
+const {hasUserId, getSessions, setValue, startCleanupService} = sessions;
 
 describe('userify', () => {
 
@@ -214,26 +213,24 @@ describe('userify', () => {
   });
 
   it('session cleanup', async () => {
-    sinon.stub(sessions, 'SESSION_TTL').get(() => 50);
-    sinon.stub(sessions, 'CLEANUP_INTERVAL').get(() => 100);
-    const fn = () => {};
-    userify('user-1', fn);
-    userify('user-2', fn);
+    const MINUTE = 60 * 1000;
+    const clock = sinon.useFakeTimers();
+    startCleanupService();
+
+    const actionByUser1 = userify('user-1', () => setValue('foo', 1));
+    userify('user-2', () => setValue('foo', 2));
     assert.equal(getSessions().size, 2);
-    await Timeout.set(60);
-    userify('user-3', fn);
-    assert.equal(getSessions().size, 3);
-    await Timeout.set(60);
-    userify('user-3', fn);
-    assert.equal(getSessions().size, 3, '3 sessions after TTL until cleanup');
-    await Timeout.set(10);
-    assert.equal(getSessions().size, 1, 'only user-3 session');
-    assert.ok(getSessions().get('user-3'));
-    await Timeout.set(110);
-    userify('user-4', fn);
-    await Timeout.set(10);
-    assert.equal(getSessions().size, 1, 'only user-4 session');
-    assert.ok(getSessions().get('user-4'));
+
+    clock.tick(4 * MINUTE);
+    assert.equal(getSessions().size, 2);
+
+    actionByUser1();
+    clock.tick(MINUTE);
+    assert.equal(getSessions().size, 1, 'user-2 cleaned as of no activity');
+    assert.equal(getSessions().get('user-1').foo, 1);
+
+    clock.tick(5 * MINUTE);
+    assert.equal(getSessions().size, 0, 'user-1 cleaned as of no activity');
   });
 
 });

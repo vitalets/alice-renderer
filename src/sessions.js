@@ -5,25 +5,32 @@
 // TTL for session (after last message from user), 5 min.
 // Sessions older than ttl will be removed by cleanup process.
 const SESSION_TTL = 5 * 60 * 1000;
+// periodically cleanup session data of non-active users
 const CLEANUP_INTERVAL = 60 * 1000;
 
 const sessions = new Map();
+
 // Global value for userId.
 let currentUserId = null;
-let lastCleanup = 0;
+
+let cleanupTimer = null;
 
 const setUserId = userId => currentUserId = userId;
 const hasUserId = () => Boolean(currentUserId);
 
 /**
  * Updates or creates user session with actual timestamp.
- * Also runs cleanup in next tick if needed.
  */
-const touch = userId => {
-  void getOrCreateSession(userId);
-  if (shouldCleanup()) {
-    setTimeout(cleanup, 0);
+const getOrCreateSession = userId => {
+  let session = sessions.get(userId);
+  if (!session) {
+    session = {};
+    sessions.set(userId, session);
   }
+  // update timestamp on any user activity with session
+  // use $ to avoid conflicts with user data keys
+  session.$timestamp = Date.now();
+  return session;
 };
 
 /**
@@ -48,16 +55,16 @@ const setValue = (key, value) => {
 };
 
 /**
- * Updates or creates user session with actual timestamp.
+ * Starts cleanup service.
  */
-const getOrCreateSession = userId => {
-  let session = sessions.get(userId);
-  if (!session) {
-    session = {};
-    sessions.set(userId, session);
+const startCleanupService = () => {
+  if (cleanupTimer) {
+    clearInterval(cleanupTimer);
   }
-  session.timestamp = Date.now();
-  return session;
+  cleanupTimer = setInterval(cleanup, CLEANUP_INTERVAL);
+  if (cleanupTimer && cleanupTimer.unref) {
+    cleanupTimer.unref();
+  }
 };
 
 /**
@@ -66,24 +73,21 @@ const getOrCreateSession = userId => {
 const cleanup = () => {
   const now = Date.now();
   sessions.forEach((session, key) => {
-    const isOutdated = Math.abs(now - session.timestamp) > exports.SESSION_TTL;
+    const isOutdated = Math.abs(now - session.$timestamp) >= SESSION_TTL;
     if (isOutdated) {
       sessions.delete(key);
     }
   });
-  lastCleanup = now;
 };
 
-const shouldCleanup  = () => Math.abs(Date.now() - lastCleanup) > exports.CLEANUP_INTERVAL;
 const getSessions = () => sessions;
 
-Object.assign(exports, {
-  SESSION_TTL,
-  CLEANUP_INTERVAL,
-  touch,
+module.exports = {
+  getOrCreateSession,
+  startCleanupService,
   setUserId,
   hasUserId,
   getValue,
   setValue,
   getSessions,
-});
+};
