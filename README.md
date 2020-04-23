@@ -43,7 +43,6 @@ Node.js библиотека для формирования [ответов](ht
   * [enumerate(arr)](#enumeratearr)
   * [userify(userId, target)](#userifyuserid-target)
   * [select(array)](#selectarray)
-  * [onceInRange(from, to, response)](#onceinrangefrom-to-response)
   * [once(options, response)](#onceoptions-response)
   * [configure(options)](#configureoptions)
 - [Рецепты](#%D1%80%D0%B5%D1%86%D0%B5%D0%BF%D1%82%D1%8B)
@@ -729,9 +728,6 @@ userReplySuccess();
 // => "Точно!"
 // => "Класс! Это правильный ответ!"
 ```
-
-### onceInRange(from, to, response)
-DEPRECATED. Используйте `once()` с параметром `{ calls: N }`.
 
 ### once(options, response)
 Возвращает заданный ответ не чаще чем 1 раз в заданное кол-во вызовов или секунд.
