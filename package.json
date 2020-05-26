@@ -27,6 +27,7 @@
     "ci": "run-s lint test:cov",
     "toc": "markdown-toc README.md -i",
     "stryker": "stryker run",
+    "stryker:report": "open reports/mutation/html/index.html",
     "release": "run-s lint test:cov && npm version $VER && npm publish && git push --follow-tags --no-verify",
     "release-patch": "VER=patch npm run release",
     "release-minor": "VER=minor npm run release"
