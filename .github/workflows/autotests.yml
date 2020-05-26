@@ -9,10 +9,10 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
+        node-version: [10, 12]
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
@@ -23,11 +23,11 @@ jobs:
     - run: npm run test:cov
 
     - name: Generate lcov report
-      if: matrix.node-version == '10.x'
+      if: matrix.node-version == 10
       run: npx nyc report --reporter=text-lcov > ./coverage/lcov.info
 
     - name: Coveralls
-      if: matrix.node-version == '10.x'
+      if: matrix.node-version == 10
       uses: coverallsapp/github-action@master
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
