@@ -6,9 +6,11 @@
  * enumerate(['ответить', 'сдаться', 'взять подсказку']) => 'ответить, сдаться или взять подсказку'
  *
  * @param {array} arr
+ * @param {string} [separator]
+ * @param {string} [lastSeparator]
  * @returns {string}
  */
-const enumerate = arr => {
+const enumerate = (arr, { separator = ', ', lastSeparator = ' или ' } = {}) => {
   if (!Array.isArray(arr)) {
     throw new Error(`You should pass array in enumerate()`);
   }
@@ -20,8 +22,8 @@ const enumerate = arr => {
       const [prev, last] = arr.slice(-2);
       return [
         ...arr.slice(0, -2),
-        `${prev} или ${last}`
-      ].join(', ');
+        `${prev}${lastSeparator}${last}`
+      ].join(separator);
     }
   }
 };

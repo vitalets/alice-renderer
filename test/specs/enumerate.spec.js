@@ -17,4 +17,9 @@ describe('enumerate', () => {
     const res = enumerate([ undefined, 'foo', false, 'bar', null, 'baz' ]);
     assert.equal(res, 'foo, bar или baz');
   });
+
+  it('custom separators', () => {
+    const res = enumerate([ 'foo', 'bar', 'baz' ], { separator: ' или ', lastSeparator: ', а также ' });
+    assert.equal(res, 'foo или bar, а также baz');
+  });
 });

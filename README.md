@@ -40,7 +40,7 @@ Node.js библиотека для формирования [ответов](ht
   * [tts(value)](#ttsvalue)
   * [textTts(textValue, ttsValue)](#textttstextvalue-ttsvalue)
   * [plural(number, one, two, five)](#pluralnumber-one-two-five)
-  * [enumerate(arr)](#enumeratearr)
+  * [enumerate(arr, { separator = ', ', lastSeparator = ' или ' })](#enumeratearr--separator----lastseparator---%D0%B8%D0%BB%D0%B8--)
   * [userify(userId, target)](#userifyuserid-target)
   * [select(array)](#selectarray)
   * [once(options, response)](#onceoptions-response)
@@ -573,10 +573,12 @@ getResponse(5); // response.text = "У вас 5 правильных ответ�
 getResponse(121); // response.text = "У вас 121 правильный ответ"
 ```
 
-### enumerate(arr)
+### enumerate(arr, { separator = ', ', lastSeparator = ' или ' })
 Перечисляет не-пустые значения в строку, добавляя "или" перед последним. Это более человеко-привычное перечисление.
 **Параметры:**
   * **arr** `{array}` - список элементов.
+  * **separator** `{string}` - разделитель элементов, кроме последней пары (по умолчанию `', '`)
+  * **lastSeparator** `{string}` - разделитель для последней пары (по умолчанию `' или '`)
 
 **Возвращает:**
   * `{string}`
