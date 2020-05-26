@@ -24,7 +24,7 @@ jobs:
 
     - name: Generate lcov report
       if: matrix.node-version == 10
-      run: npx nyc report --reporter=text-lcov > ./coverage/lcov.info
+      run: npx nyc report --reporter=lcov
 
     - name: Coveralls
       if: matrix.node-version == 10
