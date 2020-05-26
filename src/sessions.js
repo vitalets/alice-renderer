@@ -62,7 +62,7 @@ const startCleanupService = () => {
     clearInterval(cleanupTimer);
   }
   cleanupTimer = setInterval(cleanup, CLEANUP_INTERVAL);
-  if (cleanupTimer && cleanupTimer.unref) {
+  if (cleanupTimer.unref) {
     cleanupTimer.unref();
   }
 };
