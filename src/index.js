@@ -15,7 +15,7 @@ const {once} = require('./once');
 const {configure} = require('./configure');
 const {image} = require('./image');
 const {enumerate} = require('./enumerate');
-const {startCleanupService} = require('./sessions');
+const {startCleanupService, getSessions} = require('./sessions');
 
 startCleanupService();
 
@@ -36,4 +36,5 @@ module.exports = {
   configure,
   image,
   enumerate,
+  getSessions,
 };
