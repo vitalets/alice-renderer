@@ -22,7 +22,7 @@
   "scripts": {
     "lint": "eslint src test",
     "test": "mocha test/setup.js test/specs/*.spec.js",
-    "test:cov": "nyc --reporter=html --check-coverage --lines 100 npm t && nyc report",
+    "test:cov": "nyc --reporter=html --check-coverage --lines 99 npm t && nyc report",
     "open:cov": "open coverage/index.html",
     "toc": "markdown-toc README.md -i",
     "stryker": "stryker run",

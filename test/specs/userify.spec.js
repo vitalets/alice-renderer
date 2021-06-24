@@ -154,6 +154,27 @@ describe('userify', () => {
       });
     });
 
+    it('select should return values without common words with prev value', () => {
+      const values = [
+        'привет как дела',
+        'приветы как жизнь',
+        'добрый день',
+        'доброе утро',
+      ];
+      const fn = () => select(values);
+      const wrappedFn = userify(USER_ID, fn);
+      for (let i = 0; i <= 10; i++) {
+        const calls = [
+          wrappedFn(),
+          wrappedFn(),
+        ].map(w => w.substr(0, 4)).sort();
+        assert.deepEqual(calls, [
+          'добр',
+          'прив',
+        ]);
+      }
+    });
+
     describe('config.disableRandom = true', () => {
       before(() => {
         configure({disableRandom: true});
