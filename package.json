@@ -39,10 +39,10 @@
     "{src,test}/**/*.js": "eslint"
   },
   "devDependencies": {
-    "@stryker-mutator/core": "^3.2.4",
-    "@stryker-mutator/javascript-mutator": "^3.2.4",
-    "@stryker-mutator/mocha-framework": "^3.2.4",
-    "@stryker-mutator/mocha-runner": "^3.2.4",
+    "@stryker-mutator/core": "^5.1.1",
+    "@stryker-mutator/javascript-mutator": "^4.0.0",
+    "@stryker-mutator/mocha-framework": "^4.0.0",
+    "@stryker-mutator/mocha-runner": "^5.1.1",
     "chai": "^4.3.4",
     "eslint": "^7.29.0",
     "eslint-plugin-mocha": "^9.0.0",
