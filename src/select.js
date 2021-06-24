@@ -57,21 +57,26 @@ const getPossibleIndexes = (indexes, excludedIndexes) => {
 };
 
 /**
- * Get indexes without common words with last used phrase.
+ * Get indexes of values most different from alrady used values.
+ * Comparison made by common long words.
  */
 const getMostDifferentIndexes = (excludedIndexes, possibleIndexes, arr) => {
-  const lastUsedIndex = excludedIndexes[excludedIndexes.length - 1];
-  const lastUsedValue = arr[lastUsedIndex];
-  if (typeof lastUsedValue !== 'string') {
-    return possibleIndexes;
+  let result = possibleIndexes;
+  for (let i = excludedIndexes.length - 1; i >= 0; i--) {
+    const usedValue = arr[excludedIndexes[i]];
+    const usedWords = getLongWordsWithoutEndings(usedValue);
+    const newResult = result.filter(index => {
+      const words = getLongWordsWithoutEndings(arr[index]);
+      const hasCommonWords = words.some(word => usedWords.includes(word));
+      return !hasCommonWords;
+    });
+    switch (newResult.length) {
+      case 0: return result;
+      case 1: return newResult;
+      default: result = newResult;
+    }
   }
-  const lastUsedWords = getLongWordsWithoutEndings(lastUsedValue);
-  const result = possibleIndexes.filter(index => {
-    const words = getLongWordsWithoutEndings(arr[index]);
-    const hasCommonWords = words.some(word => lastUsedWords.includes(word));
-    return !hasCommonWords;
-  });
-  return result.length > 0 ? result : possibleIndexes;
+  return result;
 };
 
 const getLongWordsWithoutEndings = str => {
