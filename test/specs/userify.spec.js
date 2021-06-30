@@ -157,8 +157,8 @@ describe('userify', () => {
     it('select should return values without common words with prev value', () => {
       const values = [
         'привет как дела',
-        'приветы как жизнь',
-        'добрый день',
+        'привет! как жизнь?',
+        'добрый, день',
         'доброе утро',
       ];
       const fn = () => select(values);

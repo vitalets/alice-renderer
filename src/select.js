@@ -81,13 +81,22 @@ const getMostDifferentIndexes = (excludedIndexes, possibleIndexes, arr) => {
 
 const getLongWordsWithoutEndings = str => {
   if (typeof str === 'string') {
-    return str
-      .split(/\s+/)
+    const words = str.match(/[а-яё]+/ig) || [];
+    return words
       .filter(word => word.length >= 4)
-      .map(word => word.substr(0, word.length >= 6 ? 2 : 1));
+      .map(word => removeWordEnding(word));
   } else {
     return [];
   }
+};
+
+/**
+ * Remove word ending (depending on word length)
+ */
+const removeWordEnding = word => {
+  const l = word.length;
+  const removeChars = l <= 5 ? 1 : (l <= 7 ? 2 : 3);
+  return word.substring(0, l - removeChars);
 };
 
 /**
