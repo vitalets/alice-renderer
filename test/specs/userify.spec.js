@@ -175,6 +175,25 @@ describe('userify', () => {
       }
     });
 
+    it('calc key by strings as join of 5 truncated strings', () => {
+      const word = [
+        'Отлично, Отлично, Отлично',
+        'Супер, Супер, Супер',
+        'Класс, Класс, Класс',
+        'Здорово, Здорово, Здорово',
+        'Прекрасно, Прекрасно, Прекрасно',
+        'Шикарно, Шикарно, Шикарно',
+      ];
+      const fn = () => reply`${word}`;
+      const wrappedFn = userify(USER_ID, fn);
+      wrappedFn();
+      const session = getSessions().get(USER_ID);
+      assert.deepEqual(Object.keys(session), [
+        '$timestamp',
+        'Отлично, Отличн|Супер, Супер, С|Класс, Класс, К|Здорово, Здоров|Прекрасно, Прек',
+      ]);
+    });
+
     describe('config.disableRandom = true', () => {
       before(() => {
         configure({disableRandom: true});
