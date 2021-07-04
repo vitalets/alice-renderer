@@ -34,6 +34,17 @@ const truncate = (str, maxLength) => {
     : str;
 };
 
+/**
+ * Group by fn.
+ */
+const groupBy = (arr, fn) => {
+  return arr.reduce((acc, item) => {
+    const value = fn(item);
+    acc[value] = (acc[value] || []).concat([item]);
+    return acc;
+  }, {});
+};
+
 module.exports = {
   stringify,
   isObject,
@@ -43,4 +54,5 @@ module.exports = {
   removeUnneededSpaces,
   convertNewlinesToSpaces,
   truncate,
+  groupBy,
 };

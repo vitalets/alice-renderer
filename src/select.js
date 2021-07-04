@@ -3,9 +3,10 @@
  * No equal values in sequence.
  */
 
-const {getRandomElement} = require('./utils');
+const {getRandomElement, groupBy} = require('./utils');
 const {config} = require('./configure');
 const {hasUserId, getValue, setValue} = require('./sessions');
+const {getLongWords, getCommonWordsCount} = require('./helpers/common-words');
 
 /**
  * Selects random element from array:
@@ -34,28 +35,28 @@ const selectRandomElement = arr => {
  */
 const selectNextElement = (arr, key) => {
   const indexes = arr.map((_, index) => index);
-  const usedIndexes = getValue(key) || [];
-  const excludedIndexes = getExcludedIndexes(indexes, usedIndexes);
-  const possibleIndexes = getPossibleIndexes(indexes, excludedIndexes);
-  const mostDifferentIndexes = getMostDifferentIndexes(excludedIndexes, possibleIndexes, arr);
+  const savedIndexes = getValue(key) || [];
+  const excludedIndexes = handleRotate(indexes, savedIndexes);
+  const allowedIndexes = getAllowedIndexes(indexes, excludedIndexes);
+  const mostDifferentIndexes = getMostDifferentIndexes(excludedIndexes, allowedIndexes, arr);
   const index = selectRandomElement(mostDifferentIndexes);
-  usedIndexes.push(index);
-  setValue(key, usedIndexes);
+  savedIndexes.push(index);
+  setValue(key, savedIndexes);
   return arr[index];
 };
 
-const getExcludedIndexes = (indexes, usedIndexes) => {
-  if (usedIndexes.length >= indexes.length) {
+const handleRotate = (indexes, savedIndexes) => {
+  if (savedIndexes.length >= indexes.length) {
     // keep last used index to avoid possible repeating after clearing usedIndexes
-    const lastUsedIndex = usedIndexes[usedIndexes.length - 1];
-    usedIndexes.length = 0;
+    const lastUsedIndex = savedIndexes[savedIndexes.length - 1];
+    savedIndexes.length = 0;
     return indexes.length > 1 ? [lastUsedIndex] : [];
   } else {
-    return usedIndexes;
+    return savedIndexes;
   }
 };
 
-const getPossibleIndexes = (indexes, excludedIndexes) => {
+const getAllowedIndexes = (indexes, excludedIndexes) => {
   return indexes.filter(index => !excludedIndexes.includes(index));
 };
 
@@ -64,45 +65,18 @@ const getPossibleIndexes = (indexes, excludedIndexes) => {
  * Comparison made by common long words.
  */
 const getMostDifferentIndexes = (excludedIndexes, possibleIndexes, arr) => {
-  if (config.disableRandom) {
-    return possibleIndexes;
-  }
+  if (config.disableRandom || !isStrings(arr)) return possibleIndexes;
   let result = possibleIndexes;
   for (let i = excludedIndexes.length - 1; i >= 0; i--) {
+    if (result.length <= 1) break;
     const usedValue = arr[excludedIndexes[i]];
-    const usedWords = getLongWordsWithoutEndings(usedValue);
-    const newResult = result.filter(index => {
-      const words = getLongWordsWithoutEndings(arr[index]);
-      const hasCommonWords = words.some(word => usedWords.includes(word));
-      return !hasCommonWords;
-    });
-    switch (newResult.length) {
-      case 0: return result;
-      case 1: return newResult;
-      default: result = newResult;
-    }
+    const usedWords = getLongWords(usedValue);
+    const map = groupBy(result, index => getCommonWordsCount(usedWords, getLongWords(arr[index])));
+    const counts = Object.keys(map).map(Number);
+    const minCount = Math.min(...counts);
+    result = map[minCount];
   }
   return result;
-};
-
-const getLongWordsWithoutEndings = str => {
-  if (typeof str === 'string') {
-    const words = str.match(/[а-яё]+/ig) || [];
-    return words
-      .filter(word => word.length >= 4)
-      .map(word => removeWordEnding(word));
-  } else {
-    return [];
-  }
-};
-
-/**
- * Remove word ending (depending on word length)
- */
-const removeWordEnding = word => {
-  const l = word.length;
-  const removeChars = l <= 5 ? 1 : (l <= 7 ? 2 : 3);
-  return word.substring(0, l - removeChars);
 };
 
 /**
