@@ -15,14 +15,17 @@ const {hasUserId, getValue, setValue} = require('./sessions');
  * @param {Array} arr
  */
 const select = arr => {
-  if (arr.length <= 1 || config.disableRandom) {
-    return arr[0];
-  } else if (hasUserId()) {
-    const key = getKey(arr);
-    return key ? selectNextElement(arr, key) : getRandomElement(arr);
-  } else {
-    return getRandomElement(arr);
-  }
+  const key = hasUserId() && getKey(arr);
+  return key
+    ? selectNextElement(arr, key)
+    : selectRandomElement(arr);
+};
+
+/**
+ * Like getRandomElement, but returns first item if disableRandom = true
+ */
+const selectRandomElement = arr => {
+  return config.disableRandom ? arr[0] : getRandomElement(arr);
 };
 
 /**
@@ -30,12 +33,12 @@ const select = arr => {
  * For strings tries to select element with non-repeated words with prev element.
  */
 const selectNextElement = (arr, key) => {
-  const indexes = arr.map((v, index) => index);
+  const indexes = arr.map((_, index) => index);
   const usedIndexes = getValue(key) || [];
   const excludedIndexes = getExcludedIndexes(indexes, usedIndexes);
   const possibleIndexes = getPossibleIndexes(indexes, excludedIndexes);
   const mostDifferentIndexes = getMostDifferentIndexes(excludedIndexes, possibleIndexes, arr);
-  const index = getRandomElement(mostDifferentIndexes);
+  const index = selectRandomElement(mostDifferentIndexes);
   usedIndexes.push(index);
   setValue(key, usedIndexes);
   return arr[index];
@@ -46,7 +49,7 @@ const getExcludedIndexes = (indexes, usedIndexes) => {
     // keep last used index to avoid possible repeating after clearing usedIndexes
     const lastUsedIndex = usedIndexes[usedIndexes.length - 1];
     usedIndexes.length = 0;
-    return [lastUsedIndex];
+    return indexes.length > 1 ? [lastUsedIndex] : [];
   } else {
     return usedIndexes;
   }
@@ -61,6 +64,9 @@ const getPossibleIndexes = (indexes, excludedIndexes) => {
  * Comparison made by common long words.
  */
 const getMostDifferentIndexes = (excludedIndexes, possibleIndexes, arr) => {
+  if (config.disableRandom) {
+    return possibleIndexes;
+  }
   let result = possibleIndexes;
   for (let i = excludedIndexes.length - 1; i >= 0; i--) {
     const usedValue = arr[excludedIndexes[i]];
