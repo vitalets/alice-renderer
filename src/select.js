@@ -107,13 +107,17 @@ const removeWordEnding = word => {
  */
 const getKey = arr => {
   try {
-    return JSON.stringify(arr);
+    // For array of strings build shorter key than JSON.stringify
+    return isStrings(arr) ? buildKeyFromStrings(arr) : JSON.stringify(arr);
   } catch(e) {
     // in case of error, return empty key to fallback on getRandomElement()
     // eslint-disable-next-line no-console
     console.warn(`[renderer]: Can't create key for ${typeof arr}:`, arr);
   }
 };
+
+const isStrings = arr => arr.every(item => typeof item === 'string');
+const buildKeyFromStrings = arr => arr.map(s => s.substr(0, 15)).slice(0, 5).join('|');
 
 module.exports = {
   select,
