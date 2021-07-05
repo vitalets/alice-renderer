@@ -16,17 +16,11 @@ const {getLongWords, getCommonWordsCount} = require('./helpers/common-words');
  * @param {Array} arr
  */
 const select = arr => {
+  if (config.disableRandom) return arr[0];
   const key = hasUserId() && getKey(arr);
   return key
     ? selectNextElement(arr, key)
-    : selectRandomElement(arr);
-};
-
-/**
- * Like getRandomElement, but returns first item if disableRandom = true
- */
-const selectRandomElement = arr => {
-  return config.disableRandom ? arr[0] : getRandomElement(arr);
+    : getRandomElement(arr);
 };
 
 /**
@@ -39,7 +33,7 @@ const selectNextElement = (arr, key) => {
   const excludedIndexes = handleRotate(indexes, savedIndexes);
   const allowedIndexes = getAllowedIndexes(indexes, excludedIndexes);
   const mostDifferentIndexes = getMostDifferentIndexes(excludedIndexes, allowedIndexes, arr);
-  const index = selectRandomElement(mostDifferentIndexes);
+  const index = getRandomElement(mostDifferentIndexes);
   savedIndexes.push(index);
   setValue(key, savedIndexes);
   return arr[index];
@@ -88,7 +82,9 @@ const getMostDifferentIndexes = (excludedIndexes, possibleIndexes, arr) => {
 const getKey = arr => {
   try {
     // For array of strings build shorter key than JSON.stringify
-    return isStrings(arr) ? buildKeyFromStrings(arr) : JSON.stringify(arr);
+    return isStrings(arr)
+      ? buildKeyFromStrings(arr)
+      : JSON.stringify(arr);
   } catch(e) {
     // in case of error, return empty key to fallback on getRandomElement()
     // eslint-disable-next-line no-console

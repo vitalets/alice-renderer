@@ -203,19 +203,14 @@ describe('userify', () => {
         configure({disableRandom: false});
       });
 
-      it('return elements in order', () => {
+      it('always return first element', () => {
         const fn = () => reply`${['Отлично', 'Супер', 'Класс']}`;
         const wrappedFn = userify(USER_ID, fn);
-        const res = new Array(6).fill(null).map(() => wrappedFn().text);
+        const counts = countResponses(wrappedFn, COUNT);
 
-        assert.deepEqual(res, [
-          'Отлично',
-          'Супер',
-          'Класс',
-          'Отлично',
-          'Супер',
-          'Класс',
-        ]);
+        assert.deepEqual(counts, {
+          'Отлично': COUNT
+        });
       });
     });
 
