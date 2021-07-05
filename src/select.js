@@ -16,11 +16,10 @@ const {getLongWords, getCommonWordsCount} = require('./helpers/common-words');
  * @param {Array} arr
  */
 const select = arr => {
-  if (config.disableRandom) return arr[0];
   const key = hasUserId() && getKey(arr);
-  return key
-    ? selectNextElement(arr, key)
-    : getRandomElement(arr);
+  const value = key ? selectNextElement(arr, key) : getRandomElement(arr);
+  // даже при disableRandom просчитываем value, чтобы в тестах было ближе к проду
+  return config.disableRandom ? arr[0] : value;
 };
 
 /**
