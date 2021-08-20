@@ -1,7 +1,7 @@
 /**
  * Insert image (BigImage)
  */
-const {truncate} = require('./utils');
+import {truncate} from './utils.js';
 
 const MAX_TITLE_LENGTH = 128;
 const MAX_DESCRIPTION_LENGTH = 256;
@@ -24,7 +24,10 @@ const appendDescriptionSymbol = Symbol('appendDescriptionSymbol');
  * @param {?object} [button]
  * @returns {object}
  */
-const image = (imageId, {title, description, appendDescription, button} = {}) => {
+export const image = (
+  imageId,
+  {title, description, appendDescription, button} = {}
+) => {
   const card = {
     type: 'BigImage',
     image_id: imageId,
@@ -34,7 +37,7 @@ const image = (imageId, {title, description, appendDescription, button} = {}) =>
   setAppendDescription(card, appendDescription);
   setButton(card, button);
   return {
-    card
+    card,
   };
 };
 
@@ -47,7 +50,7 @@ const image = (imageId, {title, description, appendDescription, button} = {}) =>
  * @param {object} card
  * @param {string} text
  */
-const updateImageText = ({card, text}) => {
+export const updateImageText = ({card, text}) => {
   if (!card || card.type !== 'BigImage' || !text) {
     return;
   }
@@ -98,12 +101,17 @@ const splitToTitleAndDescription = (card, text) => {
   const fullText = getFullText(card, text);
   const titleMaxChunk = fullText.substr(0, MAX_TITLE_LENGTH);
   const lastSentenceStartIndex = findLastSentenceStartIndex(titleMaxChunk);
-  const titleChunkLength = lastSentenceStartIndex ? lastSentenceStartIndex - 1 : 0;
+  const titleChunkLength = lastSentenceStartIndex
+    ? lastSentenceStartIndex - 1
+    : 0;
   card.title = fullText.substr(0, titleChunkLength).trim();
-  card.description = truncate(fullText.substr(titleChunkLength), MAX_DESCRIPTION_LENGTH);
+  card.description = truncate(
+    fullText.substr(titleChunkLength),
+    MAX_DESCRIPTION_LENGTH
+  );
 };
 
-const findLastSentenceStartIndex = str => {
+const findLastSentenceStartIndex = (str) => {
   const strReversed = str.split('').reverse().join('');
   const matches = strReversed.match(/[А-ЯЁ]\s+/);
   return matches ? str.length - matches.index : 0;
@@ -134,7 +142,11 @@ const setInitialDescription = (card, description) => {
 
 const setAppendDescription = (card, appendDescription) => {
   // todo: warn if there are both description and appendDescription
-  if (appendDescription !== undefined && appendDescription !== null && !card[hasInitialDescription]) {
+  if (
+    appendDescription !== undefined &&
+    appendDescription !== null &&
+    !card[hasInitialDescription]
+  ) {
     card.description = truncate(appendDescription, MAX_DESCRIPTION_LENGTH);
     card[appendDescriptionSymbol] = card.description;
   }
@@ -144,9 +156,4 @@ const setButton = (card, button) => {
   if (button) {
     card.button = button;
   }
-};
-
-module.exports = {
-  image,
-  updateImageText,
 };

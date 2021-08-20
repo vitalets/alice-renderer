@@ -2,33 +2,48 @@
  * Alice renderer module.
  */
 
-const {reply} = require('./reply');
-const {text} = require('./text');
-const {br} = require('./br');
-const {tts, audio, effect, pause} = require('./tts');
-const {textTts} = require('./text-tts');
-const {buttons} = require('./buttons');
-const {plural} = require('./plural');
-const {userify} = require('./userify');
-const {select} = require('./select');
-const {once} = require('./once');
-const {configure} = require('./configure');
-const {image} = require('./image');
-const {enumerate} = require('./enumerate');
-const {startCleanupService, getSessions} = require('./sessions');
+import {reply} from './reply';
+import {text} from './text';
+import {br} from './br';
+import {tts, audio, effect, pause} from './tts';
+import {textTts} from './text-tts';
+import {buttons} from './buttons';
+import {plural} from './plural';
+import {userify} from './userify';
+import {select} from './select';
+import {once} from './once';
+import {configure} from './configure';
+import {image} from './image';
+import {enumerate} from './enumerate';
+import {startCleanupService, getSessions} from './sessions';
+
+export {reply} from './reply';
+export {text} from './text';
+export {tts, audio, effect, pause} from './tts';
+export {textTts} from './text-tts';
+export {buttons} from './buttons';
+export {br} from './br';
+export {plural} from './plural';
+export {userify} from './userify';
+export {select} from './select';
+export {once} from './once';
+export {configure} from './configure';
+export {image} from './image';
+export {enumerate} from './enumerate';
+export {getSessions} from './sessions';
 
 startCleanupService();
 
-module.exports = {
+export default {
   reply,
   text,
+  br,
   tts,
-  textTts,
-  buttons,
   audio,
   effect,
   pause,
-  br,
+  textTts,
+  buttons,
   plural,
   userify,
   select,

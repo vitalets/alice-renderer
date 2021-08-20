@@ -3,7 +3,7 @@
  * Used in select().
  */
 
-const getCommonWordsCount = (words1, words2, charsLimit = 4) => {
+export const getCommonWordsCount = (words1, words2, charsLimit = 4) => {
   let count = 0;
   for (const word1 of words1) {
     for (const word2 of words2) {
@@ -21,10 +21,6 @@ const getCommonCharsCount = (word1, word2) => {
   return i;
 };
 
-const getWords = str => str.match(/[а-яё]+/ig) || [];
-const getLongWords = str => getWords(str).filter(word => word.length >= 4);
-
-module.exports = {
-  getCommonWordsCount,
-  getLongWords,
-};
+export const getWords = (str) => str.match(/[а-яё]+/gi) || [];
+export const getLongWords = (str) =>
+  getWords(str).filter((word) => word.length >= 4);

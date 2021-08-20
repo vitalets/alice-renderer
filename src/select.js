@@ -3,10 +3,10 @@
  * No equal values in sequence.
  */
 
-const {getRandomElement, groupBy} = require('./utils');
-const {config} = require('./configure');
-const {hasUserId, getValue, setValue} = require('./sessions');
-const {getLongWords, getCommonWordsCount} = require('./helpers/common-words');
+import {getRandomElement, groupBy} from './utils.js';
+import {config} from './configure';
+import {hasUserId, getValue, setValue} from './sessions';
+import {getLongWords, getCommonWordsCount} from './helpers/common-words.js';
 
 /**
  * Selects random element from array:
@@ -15,7 +15,7 @@ const {getLongWords, getCommonWordsCount} = require('./helpers/common-words');
  *
  * @param {Array} arr
  */
-const select = arr => {
+export const select = (arr) => {
   const key = hasUserId() && getKey(arr);
   const value = key ? selectNextElement(arr, key) : getRandomElement(arr);
   // даже при disableRandom просчитываем value, чтобы в тестах было ближе к проду
@@ -31,7 +31,11 @@ const selectNextElement = (arr, key) => {
   const savedIndexes = getValue(key) || [];
   const excludedIndexes = handleRotate(indexes, savedIndexes);
   const allowedIndexes = getAllowedIndexes(indexes, excludedIndexes);
-  const mostDifferentIndexes = getMostDifferentIndexes(excludedIndexes, allowedIndexes, arr);
+  const mostDifferentIndexes = getMostDifferentIndexes(
+    excludedIndexes,
+    allowedIndexes,
+    arr
+  );
   const index = getRandomElement(mostDifferentIndexes);
   savedIndexes.push(index);
   setValue(key, savedIndexes);
@@ -50,7 +54,7 @@ const handleRotate = (indexes, savedIndexes) => {
 };
 
 const getAllowedIndexes = (indexes, excludedIndexes) => {
-  return indexes.filter(index => !excludedIndexes.includes(index));
+  return indexes.filter((index) => !excludedIndexes.includes(index));
 };
 
 /**
@@ -64,7 +68,9 @@ const getMostDifferentIndexes = (excludedIndexes, possibleIndexes, arr) => {
     if (result.length <= 1) break;
     const usedValue = arr[excludedIndexes[i]];
     const usedWords = getLongWords(usedValue);
-    const map = groupBy(result, index => getCommonWordsCount(usedWords, getLongWords(arr[index])));
+    const map = groupBy(result, (index) =>
+      getCommonWordsCount(usedWords, getLongWords(arr[index]))
+    );
     const counts = Object.keys(map).map(Number);
     const minCount = Math.min(...counts);
     result = map[minCount];
@@ -78,22 +84,20 @@ const getMostDifferentIndexes = (excludedIndexes, possibleIndexes, arr) => {
  * @param {Array} arr
  * @returns {String}
  */
-const getKey = arr => {
+const getKey = (arr) => {
   try {
     // For array of strings build shorter key than JSON.stringify
-    return isStrings(arr)
-      ? buildKeyFromStrings(arr)
-      : JSON.stringify(arr);
-  } catch(e) {
+    return isStrings(arr) ? buildKeyFromStrings(arr) : JSON.stringify(arr);
+  } catch (e) {
     // in case of error, return empty key to fallback on getRandomElement()
     // eslint-disable-next-line no-console
     console.warn(`[renderer]: Can't create key for ${typeof arr}:`, arr);
   }
 };
 
-const isStrings = arr => arr.every(item => typeof item === 'string');
-const buildKeyFromStrings = arr => arr.map(s => s.substr(0, 15)).slice(0, 5).join('|');
-
-module.exports = {
-  select,
-};
+const isStrings = (arr) => arr.every((item) => typeof item === 'string');
+const buildKeyFromStrings = (arr) =>
+  arr
+    .map((s) => s.substr(0, 15))
+    .slice(0, 5)
+    .join('|');

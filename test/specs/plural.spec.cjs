@@ -1,3 +1,4 @@
+require = require('esm')(module);
 
 const {reply, plural} = require('../../src');
 

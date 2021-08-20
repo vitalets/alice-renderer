@@ -1,3 +1,4 @@
+require = require('esm')(module);
 
 const {reply, tts, audio, effect, pause} = require('../../src');
 

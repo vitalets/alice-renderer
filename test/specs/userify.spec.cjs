@@ -1,3 +1,5 @@
+require = require('esm')(module);
+
 const {reply, userify, select, audio, text, configure} = require('../../src');
 const sessions = require('../../src/sessions');
 const {hasUserId, getSessions, setValue, startCleanupService} = sessions;
@@ -74,7 +76,9 @@ describe('userify', () => {
     });
 
     it('clear current user id even if error in fn', () => {
-      const fn = () => {throw new Error('err');};
+      const fn = () => {
+        throw new Error('err');
+      };
       const wrappedFn = userify(USER_ID, fn);
       assert.throws(() => wrappedFn(), /err/);
       assert.equal(hasUserId(), false);

@@ -2,19 +2,15 @@
  * Buttons
  */
 
-const {isObject} = require('./utils');
+import {isObject} from './utils.js';
 
-const buttons = (items, defaults = {hide: true}) => {
+export const buttons = (items, defaults = {hide: true}) => {
   return {
-    buttons: items.filter(Boolean).map(item => valueToButton(item, defaults))
+    buttons: items.filter(Boolean).map((item) => valueToButton(item, defaults)),
   };
 };
 
 const valueToButton = (value, defaults) => {
   value = isObject(value) ? value : {title: String(value)};
   return Object.assign({}, defaults, value);
-};
-
-module.exports = {
-  buttons,
 };

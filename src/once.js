@@ -2,7 +2,7 @@
  * once() - возвращает response не чаще чем 1 раз в заданное кол-во вызовов или секунд.
  */
 
-const { hasUserId, getValue, setValue } = require('./sessions');
+import {hasUserId, getValue, setValue} from './sessions';
 
 /**
  * Возвращает response не чаще чем 1 раз в заданное кол-во вызовов или секунд.
@@ -15,7 +15,7 @@ const { hasUserId, getValue, setValue } = require('./sessions');
  * @param {*} response
  * @returns {*}
  */
-const once = (options, response) => {
+export const once = (options, response) => {
   if (hasUserId()) {
     const key = getKey(response);
     const triggered = new OnceTrigger(key, options).handleCall();
@@ -30,7 +30,7 @@ const once = (options, response) => {
  * @param obj
  * @returns {string}
  */
-const getKey = obj => {
+const getKey = (obj) => {
   return JSON.stringify(obj);
 };
 
@@ -45,12 +45,17 @@ class OnceTrigger {
     const info = getValue(key) || {};
     this._currentCalls = info.currentCalls || 0;
     this._isFirstCall = info.lastTriggerTime === undefined;
-    this._lastTriggerTime = this._isFirstCall ? Date.now() : info.lastTriggerTime;
+    this._lastTriggerTime = this._isFirstCall
+      ? Date.now()
+      : info.lastTriggerTime;
   }
 
   handleCall() {
     this._currentCalls++;
-    const triggered = this._triggerByLeading() || this._triggerByCalls() || this._triggerBySeconds();
+    const triggered =
+      this._triggerByLeading() ||
+      this._triggerByCalls() ||
+      this._triggerBySeconds();
     if (triggered) {
       this._reset();
     }
@@ -67,7 +72,10 @@ class OnceTrigger {
   }
 
   _triggerBySeconds() {
-    return this._options.seconds && (Date.now() - this._lastTriggerTime) >= this._options.seconds * 1000;
+    return (
+      this._options.seconds &&
+      Date.now() - this._lastTriggerTime >= this._options.seconds * 1000
+    );
   }
 
   _reset() {
@@ -82,7 +90,3 @@ class OnceTrigger {
     });
   }
 }
-
-module.exports = {
-  once,
-};

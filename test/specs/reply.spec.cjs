@@ -1,3 +1,4 @@
+require = require('esm')(module);
 
 const {reply, audio, pause, buttons, br, text, tts, configure} = require('../../src');
 
@@ -6,7 +7,7 @@ describe('reply', () => {
     const res = reply`
       Здор+ово
     `;
-    assert.deepEqual(res,  {
+    assert.deepEqual(res, {
       text: 'Здорово',
       tts: 'Здор+ово',
       end_session: false,
@@ -16,7 +17,7 @@ describe('reply', () => {
   it('random element from array', () => {
     sinon.stub(Math, 'random').returns(0.9);
     const res = reply`${['Привет', 'Здор+ово']}! Как дел+а?`;
-    assert.deepEqual(res,  {
+    assert.deepEqual(res, {
       text: 'Здорово! Как дела?',
       tts: 'Здор+ово! Как дел+а?',
       end_session: false,
@@ -30,7 +31,7 @@ describe('reply', () => {
     const res2 = reply`
       ${res1} Как дел+а?
     `;
-    assert.deepEqual(res2,  {
+    assert.deepEqual(res2, {
       text: 'Здорово! Как дела?',
       tts: 'Здор+ово! Как дел+а?',
       end_session: false,
@@ -45,7 +46,7 @@ describe('reply', () => {
       ${res1}
       qqq
     `;
-    assert.deepEqual(res2,  {
+    assert.deepEqual(res2, {
       text: 'aaa\nbbb\n\nccc ddd qqq',
       tts: 'aaa bbb ccc ddd qqq',
       end_session: false,
@@ -83,7 +84,7 @@ describe('reply', () => {
 
   it('ignore empty array', () => {
     const res = reply`Привет! ${[]} Как дел+а?`;
-    assert.deepEqual(res,  {
+    assert.deepEqual(res, {
       text: 'Привет! Как дела?',
       tts: 'Привет! Как дел+а?',
       end_session: false,
@@ -92,7 +93,7 @@ describe('reply', () => {
 
   it('only text', () => {
     const res = reply`${text('Привет')}`;
-    assert.deepEqual(res,  {
+    assert.deepEqual(res, {
       text: 'Привет',
       tts: '',
       end_session: false,
@@ -106,7 +107,7 @@ describe('reply', () => {
       ${text('Хорошо')}${tts('Супер')}.
       ${buttons(['Отлично', 'Супер'])}
     `;
-    assert.deepEqual(res,  {
+    assert.deepEqual(res, {
       text: 'Здорово!\nКак дела? Хорошо.',
       tts: '<speaker audio="alice-sounds-game-win-1.opus"> Здор+ово!sil <[500]> Как дел+а? Супер.',
       buttons: [
@@ -119,7 +120,7 @@ describe('reply', () => {
 
   it('end session', () => {
     const res = reply.end`Здор+ово`;
-    assert.deepEqual(res,  {
+    assert.deepEqual(res, {
       text: 'Здорово',
       tts: 'Здор+ово',
       end_session: true,
@@ -128,7 +129,7 @@ describe('reply', () => {
 
   it('empty string', () => {
     const res = reply``;
-    assert.deepEqual(res,  {
+    assert.deepEqual(res, {
       text: '',
       tts: '',
       end_session: false,
@@ -152,7 +153,7 @@ describe('reply', () => {
         reply`${['Привет', 'Здор+ово']}`,
         reply`${['Привет', 'Здор+ово']}`,
       ].map(res => res.text);
-      assert.deepEqual(res,  [
+      assert.deepEqual(res, [
         'Привет',
         'Привет',
         'Привет',

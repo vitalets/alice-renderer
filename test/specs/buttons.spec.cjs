@@ -1,4 +1,4 @@
-
+require = require('esm')(module);
 const {reply, buttons} = require('../../src');
 
 describe('buttons', () => {
@@ -12,11 +12,11 @@ describe('buttons', () => {
 
   it('by objects', () => {
     const res = reply`
-      Как дела? 
+      Как дела?
       ${buttons([
-        {title: 'Отлично', url: 'https://ya.ru'}, 
-        {title: 'Супер', payload: 42}
-      ])}
+      {title: 'Отлично', url: 'https://ya.ru'},
+      {title: 'Супер', payload: 42}
+    ])}
     `;
     assert.deepEqual(res.buttons, [
       {title: 'Отлично', url: 'https://ya.ru', hide: true},

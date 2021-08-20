@@ -7,25 +7,16 @@
 
 module.exports = function (config) {
   config.set({
-    mutate: [
-      'src/**/*.js',
-      '!src/index.js'
-    ],
+    mutate: ['src/**/*.js'],
     mutator: {
       name: 'javascript',
-      excludedMutations: [
-        'EqualityOperator',
-        'ArithmeticOperator',
-      ]
+      excludedMutations: ['EqualityOperator', 'ArithmeticOperator'],
     },
     packageManager: 'npm',
     reporters: ['clear-text', 'progress'],
     testRunner: 'mocha',
     mochaOptions: {
-      spec: [
-        'test/setup.js',
-        'test/specs/**/*.js',
-      ],
+      spec: ['test/setup.cjs', 'test/specs/**/*.cjs'],
     },
     transpilers: [],
     testFramework: 'mocha',
@@ -34,7 +25,8 @@ module.exports = function (config) {
     thresholds: {
       high: 95,
       low: 95,
-      break: 100
-    }
+      break: 100,
+    },
   });
 };
+

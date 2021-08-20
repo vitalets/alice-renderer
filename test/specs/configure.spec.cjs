@@ -1,5 +1,6 @@
+require = require('esm')(module);
 
-const {configure} = require('../../src');
+const {configure, config} = require('../../src/configure');
 
 describe('configure', () => {
 
@@ -7,5 +8,4 @@ describe('configure', () => {
     const fn = () => configure({foo: 42});
     assert.throws(fn, /Unknown option: foo/);
   });
-
 });

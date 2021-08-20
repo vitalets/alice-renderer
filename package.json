@@ -10,19 +10,18 @@
     "type": "git",
     "url": "git://github.com/vitalets/alice-renderer.git"
   },
-  "main": "./src/index.js",
-  "exports": {
-    "require": "./src/index.js",
-    "import": "./src/index.mjs"
-  },
+  "module": "dist/index.mjs",
+  "main": "dist/index.cjs",
   "files": [
-    "src/",
+    "dist/",
     "README.md"
   ],
   "scripts": {
     "init": "git config core.hooksPath ./.hooks",
-    "lint": "eslint src test",
-    "test": "mocha test/setup.js test/specs/*.spec.js",
+    "watch": "rollup -c -w",
+    "build": "rimraf dist/* && npx cross-env NODE_ENV=production rollup -c",
+    "lint": "eslint src test/**/*.cjs",
+    "test": "mocha test/setup.cjs test/specs/*.spec.cjs",
     "test:cov": "nyc --reporter=html --check-coverage --lines 99 npm t && nyc report",
     "open:cov": "open coverage/index.html",
     "toc": "markdown-toc README.md -i",
@@ -36,21 +35,22 @@
     "node": ">=8"
   },
   "lint-staged": {
-    "{src,test}/**/*.js": "eslint"
+    "{src,test}/**/*.(js,cjs)": "eslint"
   },
   "devDependencies": {
-    "@stryker-mutator/core": "^5.1.1",
-    "@stryker-mutator/javascript-mutator": "^4.0.0",
-    "@stryker-mutator/mocha-framework": "^4.0.0",
-    "@stryker-mutator/mocha-runner": "^5.1.1",
+    "@stryker-mutator/core": "^5.3.0",
+    "@stryker-mutator/mocha-runner": "^5.3.0",
     "chai": "^4.3.4",
-    "eslint": "^7.29.0",
+    "eslint": "^7.32.0",
     "eslint-plugin-mocha": "^9.0.0",
-    "lint-staged": "^11.0.0",
+    "esm": "^3.2.25",
+    "lint-staged": "^11.1.2",
     "markdown-toc": "^1.2.0",
-    "mocha": "^9.0.1",
+    "mocha": "^9.0.3",
     "nyc": "^15.1.0",
-    "sinon": "^11.1.1"
+    "rollup": "^2.56.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "sinon": "^11.1.2"
   },
   "license": "MIT"
 }

@@ -2,10 +2,16 @@
  * Reply implementation.
  */
 
-const {isObject, isString, stringify, removeUnneededSpaces, convertNewlinesToSpaces} = require('./utils');
-const {select} = require('./select');
-const {removeAccents} = require('./text');
-const {updateImageText} = require('./image');
+import {
+  isObject,
+  isString,
+  stringify,
+  removeUnneededSpaces,
+  convertNewlinesToSpaces,
+} from './utils.js';
+import {select} from './select';
+import {removeAccents} from './text';
+import {updateImageText} from './image';
 
 /**
  * String literal function for building reply.
@@ -14,10 +20,12 @@ const {updateImageText} = require('./image');
  * @param {Array} injectedValues
  * @returns {*}
  */
-const reply = (stringParts, ...injectedValues) => {
+export const reply = (stringParts, ...injectedValues) => {
   const response = stringParts.reduce((res, stringPart, index) => {
     // replace '\n' in string parts to allow newlines in IDE
-    const stringPartReply = convertSimpleValueToReply(convertNewlinesToSpaces(stringPart));
+    const stringPartReply = convertSimpleValueToReply(
+      convertNewlinesToSpaces(stringPart)
+    );
     let injectedValue = injectedValues[index];
     if (Array.isArray(injectedValue)) {
       injectedValue = select(injectedValue);
@@ -54,7 +62,7 @@ reply.end = (...args) => {
  */
 const merge = (...objects) => {
   return objects.filter(Boolean).reduce((res, obj) => {
-    Object.keys(obj).forEach(key => mergeProp(res, obj, key));
+    Object.keys(obj).forEach((key) => mergeProp(res, obj, key));
     return res;
   }, {});
 };
@@ -80,14 +88,10 @@ const mergeProp = (to, from, key) => {
   }
 };
 
-const convertSimpleValueToReply = value => {
+const convertSimpleValueToReply = (value) => {
   const str = stringify(value);
   return {
     text: str,
-    tts: str
+    tts: str,
   };
-};
-
-module.exports = {
-  reply,
 };

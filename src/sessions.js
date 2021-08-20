@@ -15,13 +15,13 @@ let currentUserId = null;
 
 let cleanupTimer = null;
 
-const setUserId = userId => currentUserId = userId;
-const hasUserId = () => Boolean(currentUserId);
+export const setUserId = (userId) => (currentUserId = userId);
+export const hasUserId = () => Boolean(currentUserId);
 
 /**
  * Updates or creates user session with actual timestamp.
  */
-const getOrCreateSession = userId => {
+export const getOrCreateSession = (userId) => {
   let session = sessions.get(userId);
   if (!session) {
     session = {};
@@ -38,7 +38,7 @@ const getOrCreateSession = userId => {
  * @param {String} key
  * @returns {*}
  */
-const getValue = key => {
+export const getValue = (key) => {
   const session = getOrCreateSession(currentUserId);
   return session[key];
 };
@@ -49,7 +49,7 @@ const getValue = key => {
  * @param {*} value
  * @returns {*}
  */
-const setValue = (key, value) => {
+export const setValue = (key, value) => {
   const session = getOrCreateSession(currentUserId);
   session[key] = value;
 };
@@ -57,11 +57,13 @@ const setValue = (key, value) => {
 /**
  * Starts cleanup service.
  */
-const startCleanupService = () => {
+export const startCleanupService = () => {
   if (cleanupTimer) {
     clearInterval(cleanupTimer);
   }
   cleanupTimer = setInterval(cleanup, CLEANUP_INTERVAL);
+
+  /* istanbul ignore next */
   if (cleanupTimer.unref) {
     cleanupTimer.unref();
   }
@@ -80,14 +82,4 @@ const cleanup = () => {
   });
 };
 
-const getSessions = () => sessions;
-
-module.exports = {
-  getOrCreateSession,
-  startCleanupService,
-  setUserId,
-  hasUserId,
-  getValue,
-  setValue,
-  getSessions,
-};
+export const getSessions = () => sessions;

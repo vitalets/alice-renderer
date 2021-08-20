@@ -1,3 +1,5 @@
+require = require('esm')(module);
+
 const {reply, image} = require('../../src');
 
 describe('image', () => {
@@ -43,7 +45,7 @@ describe('image', () => {
     });
   });
 
-  it('text 128..256: write to description',  () => {
+  it('text 128..256: write to description', () => {
     const text = 'а'.repeat(256);
     const res = reply`
       ${text}
@@ -85,7 +87,7 @@ describe('image', () => {
     });
   });
 
-  it('text > 256: write to title and description',  () => {
+  it('text > 256: write to title and description', () => {
     const titleChunk = 'Ку-ку. Привет!';
     const descriptionChunk = 'А'.repeat(300);
     const res = reply`
@@ -101,7 +103,7 @@ describe('image', () => {
     });
   });
 
-  it('text > 256: write to title and description (no sentences found)',  () => {
+  it('text > 256: write to title and description (no sentences found)', () => {
     const text = `куку${'а'.repeat(300)}`;
     const res = reply`
       ${text}
@@ -115,7 +117,7 @@ describe('image', () => {
     });
   });
 
-  it('text > 256, has original title: write to description',  () => {
+  it('text > 256, has original title: write to description', () => {
     const titleChunk = 'Ку-ку. Привет!';
     const descriptionChunk = 'А'.repeat(300);
     const text = `${titleChunk} ${descriptionChunk}`;
@@ -131,7 +133,7 @@ describe('image', () => {
     });
   });
 
-  it('text > 256, has original description: write to title',  () => {
+  it('text > 256, has original description: write to title', () => {
     const titleChunk = 'Ку-ку. Привет!';
     const descriptionChunk = 'А'.repeat(300);
     const text = `${titleChunk} ${descriptionChunk}`;
@@ -209,10 +211,10 @@ describe('image', () => {
     const res = reply`
       Привет
       ${image('1234567/xxx', {
-        button: {
-          text: 'Кнопка'
-        }
-      })}
+      button: {
+        text: 'Кнопка'
+      }
+    })}
     `;
     assert.deepEqual(res.card, {
       type: 'BigImage',

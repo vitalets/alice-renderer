@@ -2,19 +2,14 @@
  * Working with text part.
  */
 
-const {stringify} = require('./utils');
-const {select} = require('./select');
+import {stringify} from './utils.js';
+import {select} from './select';
 
-const text = value => {
+export const text = (value) => {
   value = Array.isArray(value) ? select(value) : value;
   return {
-    text: stringify(value)
+    text: stringify(value),
   };
 };
 
-const removeAccents = str => str.replace(/\+(\S)/g, '$1');
-
-module.exports = {
-  text,
-  removeAccents,
-};
+export const removeAccents = (str) => str.replace(/\+(\S)/g, '$1');

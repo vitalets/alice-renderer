@@ -1,5 +1,7 @@
-const { reply, once, userify } = require('../../');
-const { getSessions } = require('../../src/sessions');
+require = require('esm')(module);
+
+const {reply, once, userify} = require('../../src');
+const {getSessions} = require('../../src/sessions');
 
 describe('once', () => {
   const USER_ID = 'user-1';
@@ -14,7 +16,7 @@ describe('once', () => {
   });
 
   it('return response once for session if only leading provided', () => {
-    const fn = () => reply`Привет! ${once({ leading: true }, 'Ку-ку')}`;
+    const fn = () => reply`Привет! ${once({leading: true}, 'Ку-ку')}`;
     const wrappedFn = userify(USER_ID, fn);
 
     const res = [];
@@ -32,7 +34,7 @@ describe('once', () => {
   });
 
   it('return response once in N calls', () => {
-    const fn = () => reply`Привет! ${once({ calls: 3 }, 'Ку-ку')}`;
+    const fn = () => reply`Привет! ${once({calls: 3}, 'Ку-ку')}`;
     const wrappedFn = userify(USER_ID, fn);
 
     const res = [];
@@ -54,7 +56,7 @@ describe('once', () => {
   });
 
   it('return response once in N calls (leading: true)', () => {
-    const fn = () => reply`Привет! ${once({ calls: 3, leading: true }, 'Ку-ку')}`;
+    const fn = () => reply`Привет! ${once({calls: 3, leading: true}, 'Ку-ку')}`;
     const wrappedFn = userify(USER_ID, fn);
 
     const res = [];
@@ -76,7 +78,7 @@ describe('once', () => {
   });
 
   it('return response once in N seconds', () => {
-    const fn = () => reply`Привет! ${once({ seconds: 30 }, 'Ку-ку')}`;
+    const fn = () => reply`Привет! ${once({seconds: 30}, 'Ку-ку')}`;
     const wrappedFn = userify(USER_ID, fn);
 
     const clock = sinon.useFakeTimers();
@@ -108,7 +110,7 @@ describe('once', () => {
   });
 
   it('return response once in N seconds (leading=true)', () => {
-    const fn = () => reply`Привет! ${once({ seconds: 30, leading: true }, 'Ку-ку')}`;
+    const fn = () => reply`Привет! ${once({seconds: 30, leading: true}, 'Ку-ку')}`;
     const wrappedFn = userify(USER_ID, fn);
 
     const clock = sinon.useFakeTimers();
@@ -143,8 +145,8 @@ describe('once', () => {
     // используем 2 once с разными ключами
     const fn = () => reply`
       Привет!
-      ${once({ leading: true }, 'Ку-ку')}
-      ${once({ leading: true, calls: 2 }, 'Бе-бе')}
+      ${once({leading: true}, 'Ку-ку')}
+      ${once({leading: true, calls: 2}, 'Бе-бе')}
     `;
     const wrappedFn = userify(USER_ID, fn);
 
