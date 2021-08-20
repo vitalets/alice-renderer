@@ -4,7 +4,7 @@
  * See: https://github.com/vitalets/alice-renderer/issues/1
  */
 
-import {isFunction, isObject} from './utils.js';
+import {isFunction, isObject} from './utils.ts';
 import {getOrCreateSession, setUserId} from './sessions';
 
 /**

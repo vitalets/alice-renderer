@@ -21,7 +21,7 @@
     "watch": "rollup -c -w",
     "build": "rimraf dist/* && npx cross-env NODE_ENV=production rollup -c",
     "lint": "eslint src test/**/*.cjs",
-    "test": "mocha test/setup.cjs test/specs/*.spec.cjs",
+    "test": "mocha test/setup.ts test/specs/*.spec.cjs",
     "test:cov": "nyc --reporter=html --check-coverage --lines 99 npm t && nyc report",
     "open:cov": "open coverage/index.html",
     "toc": "markdown-toc README.md -i",
@@ -38,6 +38,7 @@
     "{src,test}/**/*.(js,cjs)": "eslint"
   },
   "devDependencies": {
+    "@rollup/plugin-typescript": "^8.2.5",
     "@stryker-mutator/core": "^5.3.0",
     "@stryker-mutator/mocha-runner": "^5.3.0",
     "chai": "^4.3.4",

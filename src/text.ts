@@ -2,7 +2,7 @@
  * Working with text part.
  */
 
-import {stringify} from './utils.js';
+import {stringify} from './utils.ts';
 import {select} from './select';
 
 export const text = (value) => {

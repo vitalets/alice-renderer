@@ -2,7 +2,7 @@
  * Stryker mutation testing config.
  *
  * To debug particular file:
- * npm run stryker -- -m src/reply.js
+ * npm run stryker -- -m src/reply.ts
  */
 
 module.exports = function (config) {
@@ -16,7 +16,7 @@ module.exports = function (config) {
     reporters: ['clear-text', 'progress'],
     testRunner: 'mocha',
     mochaOptions: {
-      spec: ['test/setup.cjs', 'test/specs/**/*.cjs'],
+      spec: ['test/setup.ts', 'test/specs/**/*.cjs'],
     },
     transpilers: [],
     testFramework: 'mocha',

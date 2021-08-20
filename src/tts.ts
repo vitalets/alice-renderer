@@ -2,7 +2,7 @@
  * Working with voice part.
  */
 
-import {stringify} from './utils.js';
+import {stringify} from './utils.ts';
 import {select} from './select';
 
 export const tts = (value) => {

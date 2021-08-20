@@ -3,10 +3,10 @@
  * No equal values in sequence.
  */
 
-import {getRandomElement, groupBy} from './utils.js';
+import {getRandomElement, groupBy} from './utils.ts';
 import {config} from './configure';
 import {hasUserId, getValue, setValue} from './sessions';
-import {getLongWords, getCommonWordsCount} from './helpers/common-words.js';
+import {getLongWords, getCommonWordsCount} from './helpers/common-words.ts';
 
 /**
  * Selects random element from array:
