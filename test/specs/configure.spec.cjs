@@ -8,4 +8,11 @@ describe('configure', () => {
     const fn = () => configure({foo: 42});
     assert.throws(fn, /Unknown option: foo/);
   });
+
+  it('configure empty option', () => {
+    configure();
+    assert.deepEqual(config, {
+      disableRandom: false
+    });
+  });
 });
