@@ -5,28 +5,23 @@
  * npm run stryker -- -m src/reply.ts
  */
 
-module.exports = function (config) {
-  config.set({
-    mutate: ['src/**/*.js'],
-    mutator: {
-      name: 'javascript',
-      excludedMutations: ['EqualityOperator', 'ArithmeticOperator'],
-    },
-    packageManager: 'npm',
-    reporters: ['clear-text', 'progress'],
-    testRunner: 'mocha',
-    mochaOptions: {
-      spec: ['test/setup.ts', 'test/specs/**/*.cjs'],
-    },
-    transpilers: [],
-    testFramework: 'mocha',
-    coverageAnalysis: 'perTest',
-    logLevel: 'info',
-    thresholds: {
-      high: 95,
-      low: 95,
-      break: 100,
-    },
-  });
+module.exports = {
+  mutate: ['src/**/*.ts'],
+  packageManager: 'npm',
+  reporters: ['clear-text', 'progress'],
+  testRunner: 'mocha',
+  mochaOptions: {
+    spec: ['test/specs/**/*.ts'],
+  },
+  coverageAnalysis: 'perTest',
+  logLevel: 'info',
+  thresholds: {
+    high: 95,
+    low: 95,
+    break: 100,
+  },
+  "buildCommand": "tsc -b",
+  "checkers": ["typescript"],
+  "tsconfigFile": "stryker.tsconfig.json",
 };
 

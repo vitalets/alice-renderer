@@ -2,7 +2,11 @@
  * Configuration method.
  */
 
-export const config = {
+export interface Config extends Record<string, any> {
+  disableRandom: boolean;
+}
+
+export const config: Config = {
   /**
    * Disables randomization, all replies does not vary (useful for tests)
    */
@@ -15,8 +19,8 @@ export const config = {
  * @param {Object} options
  * @param {Boolean} options.disableRandom
  */
-export const configure = (options) => {
-  Object.keys(options || {}).forEach((key) => {
+export const configure = (options: Partial<Config>): void => {
+  Object.keys(options || {}).forEach(key => {
     if (config.hasOwnProperty(key)) {
       config[key] = options[key];
     } else {

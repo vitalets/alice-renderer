@@ -1,6 +1,11 @@
-require = require('esm')(module);
+import {assert} from 'chai';
+import * as sinon from 'sinon';
 
-const {reply, audio, pause, buttons, br, text, tts, configure} = require('../../src');
+import {reply, audio, pause, buttons, br, text, tts, configure} from '../../src';
+
+afterEach(async () => {
+  sinon.restore();
+});
 
 describe('reply', () => {
   it('render string (remove spaces)', () => {

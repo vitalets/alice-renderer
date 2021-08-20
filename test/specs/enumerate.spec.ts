@@ -1,11 +1,13 @@
-require = require('esm')(module);
+import {assert} from 'chai';
 
-const {enumerate} = require('../../src');
+import {enumerate} from '../../src';
 
 describe('enumerate', () => {
 
   it('throws for non array', () => {
+    // @ts-ignore
     assert.throws(() => enumerate(), /You should pass array in enumerate/);
+    // @ts-ignore
     assert.throws(() => enumerate('string'), /You should pass array in enumerate/);
     assert.throws(() => enumerate(null), /You should pass array in enumerate/);
   });
@@ -16,6 +18,7 @@ describe('enumerate', () => {
   it('3 elements', () => assert.equal(enumerate(['foo', 'bar', 'baz']), 'foo, bar или baz'));
 
   it('filter falsy elements', () => {
+    // @ts-ignore
     const res = enumerate([undefined, 'foo', false, 'bar', null, 'baz']);
     assert.equal(res, 'foo, bar или baz');
   });

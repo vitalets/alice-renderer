@@ -1,6 +1,7 @@
-require = require('esm')(module);
+import {assert} from 'chai';
 
-const {reply, image} = require('../../src');
+
+import {reply, image} from '../../src';
 
 describe('image: appendDescription', () => {
 
@@ -11,6 +12,7 @@ describe('image: appendDescription', () => {
       ${image('1234567/xxx', {appendDescription: 'foo'})}
     `;
     assert.equal(res.text, text);
+
     assert.deepEqual(res.card, {
       type: 'BigImage',
       image_id: '1234567/xxx',

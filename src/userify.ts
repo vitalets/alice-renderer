@@ -4,8 +4,9 @@
  * See: https://github.com/vitalets/alice-renderer/issues/1
  */
 
-import {isFunction, isObject} from './utils.ts';
+import {isFunction, isObject} from './utils';
 import {getOrCreateSession, setUserId} from './sessions';
+import {Response} from "./reply";
 
 /**
  * Userifies function or all methods of object.
@@ -14,14 +15,20 @@ import {getOrCreateSession, setUserId} from './sessions';
  * @param {function|object} target
  * @returns {function|object}
  */
-export const userify = (userId, target) => {
+
+type TargetFunction<T extends any[] = any[]> = (...args: T) => Response | string
+
+// eslint-disable-next-line max-len
+export function userify<U extends any[], T extends TargetFunction<U> | Record<string, any> | string | number>(userId: string, target: T): T {
   void getOrCreateSession(userId);
-  return isFunction(target)
-    ? userifyFn(userId, target)
-    : isObject(target)
-      ? userifyObj(userId, target)
-      : target;
-};
+  if (isFunction(target)) {
+    return userifyFn(userId, target as any) as unknown as T;
+  } else if (isObject(target)) {
+    return userifyObj(userId, target as any) as unknown as T;
+  } else {
+    return target as unknown as T;
+  }
+}
 
 /**
  * Userifies function.
@@ -30,8 +37,8 @@ export const userify = (userId, target) => {
  * @param fn
  * @returns {Function}
  */
-const userifyFn = (userId, fn) => {
-  return (...args) => {
+const userifyFn = <F extends TargetFunction>(userId: string, fn: F): (...args: Parameters<F>) => Response | string => {
+  return (...args: Parameters<F>) => {
     try {
       setUserId(userId);
       return fn(...args);
@@ -48,10 +55,14 @@ const userifyFn = (userId, fn) => {
  * @param obj
  * @returns {*}
  */
-const userifyObj = (userId, obj) => {
+const userifyObj = <T extends Record<string, any>>(userId: string, obj: T): T => {
   return new Proxy(obj, {
-    get: (obj, prop) => {
-      return isFunction(obj[prop]) ? userifyFn(userId, obj[prop]) : obj[prop];
-    },
+    get: (obj: T, prop: string) => {
+      return isFunction(obj[prop])
+        ? userifyFn(userId, obj[prop])
+        : obj[prop];
+    }
   });
 };
+
+

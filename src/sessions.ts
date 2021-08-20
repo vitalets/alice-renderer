@@ -8,20 +8,21 @@ const SESSION_TTL = 5 * 60 * 1000;
 // periodically cleanup session data of non-active users
 const CLEANUP_INTERVAL = 60 * 1000;
 
-const sessions = new Map();
+type Session = Record<string, any>
+const sessions = new Map<string, Session>();
 
 // Global value for userId.
-let currentUserId = null;
+let currentUserId: string | null = null;
 
 let cleanupTimer = null;
 
-export const setUserId = (userId) => (currentUserId = userId);
-export const hasUserId = () => Boolean(currentUserId);
+export const setUserId = (userId: string): string => currentUserId = userId;
+export const hasUserId = (): boolean => Boolean(currentUserId);
 
 /**
  * Updates or creates user session with actual timestamp.
  */
-export const getOrCreateSession = (userId) => {
+export const getOrCreateSession = (userId: string): Session => {
   let session = sessions.get(userId);
   if (!session) {
     session = {};
@@ -38,7 +39,7 @@ export const getOrCreateSession = (userId) => {
  * @param {String} key
  * @returns {*}
  */
-export const getValue = (key) => {
+export const getValue = <T extends keyof Session>(key: T): Session[T] => {
   const session = getOrCreateSession(currentUserId);
   return session[key];
 };
@@ -49,7 +50,7 @@ export const getValue = (key) => {
  * @param {*} value
  * @returns {*}
  */
-export const setValue = (key, value) => {
+export const setValue = (key: string, value: any): void => {
   const session = getOrCreateSession(currentUserId);
   session[key] = value;
 };
@@ -57,7 +58,7 @@ export const setValue = (key, value) => {
 /**
  * Starts cleanup service.
  */
-export const startCleanupService = () => {
+export const startCleanupService = (): void => {
   if (cleanupTimer) {
     clearInterval(cleanupTimer);
   }
@@ -82,4 +83,4 @@ const cleanup = () => {
   });
 };
 
-export const getSessions = () => sessions;
+export const getSessions = (): typeof sessions => sessions;

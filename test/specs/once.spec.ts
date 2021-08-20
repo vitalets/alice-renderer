@@ -1,8 +1,11 @@
-require = require('esm')(module);
+import {assert} from 'chai';
+import * as sinon from 'sinon';
+import {reply, once, userify} from '../../src';
+import {getSessions} from '../../src';
 
-const {reply, once, userify} = require('../../src');
-const {getSessions} = require('../../src/sessions');
-
+afterEach(async () => {
+  sinon.restore();
+});
 describe('once', () => {
   const USER_ID = 'user-1';
 
@@ -11,6 +14,7 @@ describe('once', () => {
   });
 
   it('throws if not userified', () => {
+    // @ts-ignore
     const fn = () => reply`Привет! ${once({}, 'Ку-ку')}`;
     assert.throws(fn, /once\(\) is allowed only in userified mode/);
   });

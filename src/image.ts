@@ -1,7 +1,7 @@
 /**
  * Insert image (BigImage)
  */
-import {truncate} from './utils.js';
+import {truncate} from './utils';
 
 const MAX_TITLE_LENGTH = 128;
 const MAX_DESCRIPTION_LENGTH = 256;
@@ -24,22 +24,39 @@ const appendDescriptionSymbol = Symbol('appendDescriptionSymbol');
  * @param {?object} [button]
  * @returns {object}
  */
-export const image = (
-  imageId,
-  {title, description, appendDescription, button} = {}
-) => {
-  const card = {
-    type: 'BigImage',
-    image_id: imageId,
-  };
-  setInitialTitle(card, title);
-  setInitialDescription(card, description);
-  setAppendDescription(card, appendDescription);
-  setButton(card, button);
-  return {
-    card,
-  };
-};
+
+export interface CardImage {
+  type: string,
+  image_id: string,
+  title?: string,
+  description?: string,
+  button?: {
+    text?: string,
+    url?: string,
+    payload?: any
+  }
+}
+
+export const image = (imageId: string, {
+    title,
+    description,
+    appendDescription,
+    button
+    // eslint-disable-next-line max-len
+  }: Partial<Pick<CardImage, 'title' | 'description' | 'button'> & { appendDescription: string }> = {}): { card: CardImage } => {
+    const card: Partial<CardImage> = {
+      type: 'BigImage',
+      image_id: imageId,
+    };
+    setInitialTitle(card, title);
+    setInitialDescription(card, description);
+    setAppendDescription(card, appendDescription);
+    setButton(card, button);
+    return {
+      card
+    } as { card: CardImage };
+  }
+;
 
 /**
  * Updates title/description of image from response text.
@@ -50,7 +67,7 @@ export const image = (
  * @param {object} card
  * @param {string} text
  */
-export const updateImageText = ({card, text}) => {
+export const updateImageText = ({card, text}: { card: CardImage, text: string }): void => {
   if (!card || card.type !== 'BigImage' || !text) {
     return;
   }
@@ -68,7 +85,7 @@ export const updateImageText = ({card, text}) => {
   }
 };
 
-const tryUpdateTitle = (card, text) => {
+const tryUpdateTitle = (card: CardImage, text): boolean => {
   if (card[hasInitialTitle]) {
     return;
   }
@@ -78,7 +95,7 @@ const tryUpdateTitle = (card, text) => {
   return text.length <= MAX_TITLE_LENGTH;
 };
 
-const tryUpdateDescription = (card, text) => {
+const tryUpdateDescription = (card: CardImage, text: string): boolean | number => {
   if (card[hasInitialDescription]) {
     return;
   }
@@ -94,24 +111,19 @@ const tryUpdateDescription = (card, text) => {
   return fullText.length <= MAX_DESCRIPTION_LENGTH;
 };
 
-const splitToTitleAndDescription = (card, text) => {
+const splitToTitleAndDescription = (card: CardImage, text: string): boolean | void => {
   if (card[hasInitialTitle] || card[hasInitialDescription]) {
     return;
   }
   const fullText = getFullText(card, text);
   const titleMaxChunk = fullText.substr(0, MAX_TITLE_LENGTH);
   const lastSentenceStartIndex = findLastSentenceStartIndex(titleMaxChunk);
-  const titleChunkLength = lastSentenceStartIndex
-    ? lastSentenceStartIndex - 1
-    : 0;
+  const titleChunkLength = lastSentenceStartIndex ? lastSentenceStartIndex - 1 : 0;
   card.title = fullText.substr(0, titleChunkLength).trim();
-  card.description = truncate(
-    fullText.substr(titleChunkLength),
-    MAX_DESCRIPTION_LENGTH
-  );
+  card.description = truncate(fullText.substr(titleChunkLength), MAX_DESCRIPTION_LENGTH);
 };
 
-const findLastSentenceStartIndex = (str) => {
+const findLastSentenceStartIndex = str => {
   const strReversed = str.split('').reverse().join('');
   const matches = strReversed.match(/[А-ЯЁ]\s+/);
   return matches ? str.length - matches.index : 0;
@@ -142,11 +154,7 @@ const setInitialDescription = (card, description) => {
 
 const setAppendDescription = (card, appendDescription) => {
   // todo: warn if there are both description and appendDescription
-  if (
-    appendDescription !== undefined &&
-    appendDescription !== null &&
-    !card[hasInitialDescription]
-  ) {
+  if (appendDescription !== undefined && appendDescription !== null && !card[hasInitialDescription]) {
     card.description = truncate(appendDescription, MAX_DESCRIPTION_LENGTH);
     card[appendDescriptionSymbol] = card.description;
   }

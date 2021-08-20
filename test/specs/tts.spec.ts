@@ -1,6 +1,12 @@
-require = require('esm')(module);
+import {assert} from 'chai';
+import * as sinon from 'sinon';
 
-const {reply, tts, audio, effect, pause} = require('../../src');
+import {reply, tts, audio, effect, pause} from '../../src';
+
+
+afterEach(async () => {
+  sinon.restore();
+});
 
 describe('tts', () => {
   it('tts in reply', () => {
@@ -28,9 +34,8 @@ describe('tts', () => {
   });
 
   it('falsy values', () => {
-    const res = reply`
-      п${tts(false)}р${tts(null)}и${tts(undefined)}в${tts(0)}е${tts(NaN)}т
-    `;
+    // @ts-ignore
+    const res = reply`п${tts(false)}р${tts(null)}и${tts(undefined)}в${tts(0)}е${tts(NaN)}т`;
     assert.equal(res.text, 'привет');
     assert.equal(res.tts, 'прив0ет');
   });

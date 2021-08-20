@@ -3,10 +3,11 @@
  * No equal values in sequence.
  */
 
-import {getRandomElement, groupBy} from './utils.ts';
+import {getRandomElement, groupBy} from './utils';
 import {config} from './configure';
 import {hasUserId, getValue, setValue} from './sessions';
-import {getLongWords, getCommonWordsCount} from './helpers/common-words.ts';
+import {getLongWords, getCommonWordsCount} from './helpers/common-words';
+import {Response} from "./reply";
 
 /**
  * Selects random element from array:
@@ -15,7 +16,7 @@ import {getLongWords, getCommonWordsCount} from './helpers/common-words.ts';
  *
  * @param {Array} arr
  */
-export const select = (arr) => {
+export const select = <T extends string | Response>(arr: T[]): T => {
   const key = hasUserId() && getKey(arr);
   const value = key ? selectNextElement(arr, key) : getRandomElement(arr);
   // даже при disableRandom просчитываем value, чтобы в тестах было ближе к проду
@@ -26,23 +27,19 @@ export const select = (arr) => {
  * Returns not-repeated array element.
  * For strings tries to select element with non-repeated words with prev element.
  */
-const selectNextElement = (arr, key) => {
+const selectNextElement = <T extends any>(arr: T[], key: string): T => {
   const indexes = arr.map((_, index) => index);
   const savedIndexes = getValue(key) || [];
   const excludedIndexes = handleRotate(indexes, savedIndexes);
   const allowedIndexes = getAllowedIndexes(indexes, excludedIndexes);
-  const mostDifferentIndexes = getMostDifferentIndexes(
-    excludedIndexes,
-    allowedIndexes,
-    arr
-  );
+  const mostDifferentIndexes = getMostDifferentIndexes(excludedIndexes, allowedIndexes, arr);
   const index = getRandomElement(mostDifferentIndexes);
   savedIndexes.push(index);
   setValue(key, savedIndexes);
   return arr[index];
 };
 
-const handleRotate = (indexes, savedIndexes) => {
+const handleRotate = (indexes: number[], savedIndexes: number[]): number[] => {
   if (savedIndexes.length >= indexes.length) {
     // keep last used index to avoid possible repeating after clearing usedIndexes
     const lastUsedIndex = savedIndexes[savedIndexes.length - 1];
@@ -54,23 +51,22 @@ const handleRotate = (indexes, savedIndexes) => {
 };
 
 const getAllowedIndexes = (indexes, excludedIndexes) => {
-  return indexes.filter((index) => !excludedIndexes.includes(index));
+  return indexes.filter(index => !excludedIndexes.includes(index));
 };
 
 /**
  * Get indexes of values most different from alrady used values.
  * Comparison made by common long words.
  */
-const getMostDifferentIndexes = (excludedIndexes, possibleIndexes, arr) => {
+// eslint-disable-next-line max-len
+const getMostDifferentIndexes = <T extends any>(excludedIndexes: number[], possibleIndexes: number[], arr: T[]): number[] => {
   if (config.disableRandom || !isStrings(arr)) return possibleIndexes;
   let result = possibleIndexes;
   for (let i = excludedIndexes.length - 1; i >= 0; i--) {
     if (result.length <= 1) break;
     const usedValue = arr[excludedIndexes[i]];
-    const usedWords = getLongWords(usedValue);
-    const map = groupBy(result, (index) =>
-      getCommonWordsCount(usedWords, getLongWords(arr[index]))
-    );
+    const usedWords = getLongWords(usedValue as string);
+    const map = groupBy(result, index => getCommonWordsCount(usedWords, getLongWords(arr[index] as string)));
     const counts = Object.keys(map).map(Number);
     const minCount = Math.min(...counts);
     result = map[minCount];
@@ -84,10 +80,12 @@ const getMostDifferentIndexes = (excludedIndexes, possibleIndexes, arr) => {
  * @param {Array} arr
  * @returns {String}
  */
-const getKey = (arr) => {
+const getKey = arr => {
   try {
     // For array of strings build shorter key than JSON.stringify
-    return isStrings(arr) ? buildKeyFromStrings(arr) : JSON.stringify(arr);
+    return isStrings(arr)
+      ? buildKeyFromStrings(arr)
+      : JSON.stringify(arr);
   } catch (e) {
     // in case of error, return empty key to fallback on getRandomElement()
     // eslint-disable-next-line no-console
@@ -95,9 +93,5 @@ const getKey = (arr) => {
   }
 };
 
-const isStrings = (arr) => arr.every((item) => typeof item === 'string');
-const buildKeyFromStrings = (arr) =>
-  arr
-    .map((s) => s.substr(0, 15))
-    .slice(0, 5)
-    .join('|');
+const isStrings = arr => arr.every(item => typeof item === 'string');
+const buildKeyFromStrings = arr => arr.map(s => s.substr(0, 15)).slice(0, 5).join('|');

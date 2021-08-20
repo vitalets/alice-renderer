@@ -2,23 +2,29 @@
   "env": {
     "mocha": true
   },
-
   "globals": {
     "assert": false,
     "sinon": false
   },
-
   "plugins": [
     "mocha"
   ],
-
   "rules": {
+    "no-global-assign": 0,
     "no-console": 0,
     "max-statements": 0,
     "max-lines": 0,
     "max-nested-callbacks": 0,
     "max-len": 0,
-    "mocha/no-exclusive-tests": "error",
-    "no-global-assign": 0
-  }
+    "mocha/no-exclusive-tests": "error"
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "rules": {
+      }
+    }
+  ]
 }

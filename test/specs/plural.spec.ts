@@ -1,6 +1,6 @@
-require = require('esm')(module);
+import {assert} from 'chai';
 
-const {reply, plural} = require('../../src');
+import {reply, plural} from '../../src';
 
 describe('plural', () => {
 
@@ -30,6 +30,7 @@ describe('plural', () => {
   });
 
   describe('two variants', () => {
+    // @ts-ignore
     const getPlural = count => plural(count, 'ответ', 'ответы');
 
     it('0', () => assert.equal(getPlural(0), 'ответы'));

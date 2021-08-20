@@ -1,11 +1,15 @@
-require = require('esm')(module);
+import {assert} from 'chai';
+import * as sinon from 'sinon';
 
-const {reply, userify, select, audio, text, configure} = require('../../src');
-const sessions = require('../../src/sessions');
+import {reply, userify, select, audio, text, configure} from '../../src';
+import * as sessions from '../../src/sessions';
+
 const {hasUserId, getSessions, setValue, startCleanupService} = sessions;
 
+afterEach(async () => {
+  sinon.restore();
+});
 describe('userify', () => {
-
   const COUNT = 10;
   const USER_ID = 'user-1';
   const countResponses = (fn, callCount) => {
@@ -39,6 +43,7 @@ describe('userify', () => {
     it('array by value in reply', () => {
       const fn = () => reply`${['Отлично', 'Супер']}`;
       const wrappedFn = userify(USER_ID, fn);
+
       const counts = countResponses(wrappedFn, COUNT * 2);
 
       assert.deepEqual(counts, {
@@ -80,17 +85,19 @@ describe('userify', () => {
         throw new Error('err');
       };
       const wrappedFn = userify(USER_ID, fn);
+      // @ts-ignore
       assert.throws(() => wrappedFn(), /err/);
       assert.equal(hasUserId(), false);
     });
 
     it('fallback to random in case of errors', () => {
       sinon.stub(Math, 'random').returns(0.1);
-      const arr = ['Отлично'];
+      const arr: any[] = ['Отлично'];
       // simulate error as circular array
       arr.push({text: 'Супер', arr});
       const fn = () => reply`${arr}`;
       const wrappedFn = userify(USER_ID, fn);
+      // @ts-ignore
       const res = wrappedFn();
       assert.equal(res.text, 'Отлично');
     });
@@ -250,11 +257,13 @@ describe('userify', () => {
         prop2: {}
       };
       const wrapped = userify(USER_ID, obj);
+
       assert.equal(wrapped.prop1, obj.prop1);
       assert.equal(wrapped.prop2, obj.prop2);
     });
 
   });
+
 
   it('session cleanup', async () => {
     const MINUTE = 60 * 1000;

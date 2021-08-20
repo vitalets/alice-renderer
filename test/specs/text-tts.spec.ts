@@ -1,7 +1,11 @@
-require = require('esm')(module);
+import {assert} from 'chai';
+import * as sinon from 'sinon';
 
-const {reply, textTts} = require('../../src');
+import {reply, textTts} from '../../src';
 
+afterEach(async () => {
+  sinon.restore();
+});
 describe('text-tts', () => {
   it('regular usage', () => {
     const res = reply`Как дела? ${textTts('Зд+орово', 'Шикарно')}!`;

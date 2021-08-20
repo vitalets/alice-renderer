@@ -1,6 +1,5 @@
-require = require('esm')(module);
-
-const {isObject} = require('../../src/utils');
+import {assert} from 'chai';
+import {isObject} from '../../src/utils';
 
 describe('utils', () => {
   describe('isObject', () => {

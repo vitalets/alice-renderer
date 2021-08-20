@@ -4,6 +4,13 @@
 
 import {hasUserId, getValue, setValue} from './sessions';
 
+
+interface OnceTriggerOptions {
+  calls?: number;
+  seconds?: number;
+  leading?: boolean;
+}
+
 /**
  * Возвращает response не чаще чем 1 раз в заданное кол-во вызовов или секунд.
  * Если ни calls, ни seconds не указано - возвращает response только 1 раз за сессию.
@@ -15,7 +22,7 @@ import {hasUserId, getValue, setValue} from './sessions';
  * @param {*} response
  * @returns {*}
  */
-export const once = (options, response) => {
+export const once = <T extends string>(options: OnceTriggerOptions, response: T): T | null => {
   if (hasUserId()) {
     const key = getKey(response);
     const triggered = new OnceTrigger(key, options).handleCall();
@@ -30,32 +37,30 @@ export const once = (options, response) => {
  * @param obj
  * @returns {string}
  */
-const getKey = (obj) => {
+const getKey = obj => {
   return JSON.stringify(obj);
 };
 
+
 class OnceTrigger {
+  private _currentCalls: any;
+  private readonly _isFirstCall: boolean;
+  private _lastTriggerTime: number;
+
   /**
    * @param {string} key
    * @param {object} options { calls, seconds, leading }
    */
-  constructor(key, options) {
-    this._key = key;
-    this._options = options;
+  constructor(private readonly key: string, private options: OnceTriggerOptions) {
     const info = getValue(key) || {};
     this._currentCalls = info.currentCalls || 0;
     this._isFirstCall = info.lastTriggerTime === undefined;
-    this._lastTriggerTime = this._isFirstCall
-      ? Date.now()
-      : info.lastTriggerTime;
+    this._lastTriggerTime = this._isFirstCall ? Date.now() : Number(info.lastTriggerTime);
   }
 
   handleCall() {
     this._currentCalls++;
-    const triggered =
-      this._triggerByLeading() ||
-      this._triggerByCalls() ||
-      this._triggerBySeconds();
+    const triggered = this._triggerByLeading() || this._triggerByCalls() || this._triggerBySeconds();
     if (triggered) {
       this._reset();
     }
@@ -64,18 +69,15 @@ class OnceTrigger {
   }
 
   _triggerByLeading() {
-    return this._options.leading && this._isFirstCall;
+    return this.options.leading && this._isFirstCall;
   }
 
   _triggerByCalls() {
-    return this._options.calls && this._currentCalls >= this._options.calls;
+    return this.options.calls && this._currentCalls >= this.options.calls;
   }
 
   _triggerBySeconds() {
-    return (
-      this._options.seconds &&
-      Date.now() - this._lastTriggerTime >= this._options.seconds * 1000
-    );
+    return this.options.seconds && (Date.now() - this._lastTriggerTime) >= this.options.seconds * 1000;
   }
 
   _reset() {
@@ -84,7 +86,7 @@ class OnceTrigger {
   }
 
   _save() {
-    setValue(this._key, {
+    setValue(this.key, {
       currentCalls: this._currentCalls,
       lastTriggerTime: this._lastTriggerTime,
     });

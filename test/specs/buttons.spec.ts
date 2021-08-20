@@ -1,5 +1,5 @@
-require = require('esm')(module);
-const {reply, buttons} = require('../../src');
+import {assert} from 'chai';
+import {reply, buttons} from '../../src';
 
 describe('buttons', () => {
   it('by strings', () => {
@@ -33,6 +33,7 @@ describe('buttons', () => {
   });
 
   it('falsy', () => {
+    // @ts-ignore
     const res = reply`Как дела? ${buttons(['Отлично', false, null, 0])}`;
     assert.deepEqual(res.buttons, [
       {title: 'Отлично', hide: true},

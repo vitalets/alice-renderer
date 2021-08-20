@@ -1,6 +1,6 @@
-require = require('esm')(module);
+import {assert} from 'chai';
 
-const {reply, image} = require('../../src');
+import {reply, image} from '../../src';
 
 describe('image', () => {
   it('text < 128: write to title', () => {

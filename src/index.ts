@@ -2,20 +2,7 @@
  * Alice renderer module.
  */
 
-import {reply} from './reply';
-import {text} from './text';
-import {br} from './br';
-import {tts, audio, effect, pause} from './tts';
-import {textTts} from './text-tts';
-import {buttons} from './buttons';
-import {plural} from './plural';
-import {userify} from './userify';
-import {select} from './select';
-import {once} from './once';
-import {configure} from './configure';
-import {image} from './image';
-import {enumerate} from './enumerate';
-import {startCleanupService, getSessions} from './sessions';
+import {startCleanupService} from './sessions';
 
 export {reply} from './reply';
 export {text} from './text';
@@ -33,23 +20,3 @@ export {enumerate} from './enumerate';
 export {getSessions} from './sessions';
 
 startCleanupService();
-
-export default {
-  reply,
-  text,
-  br,
-  tts,
-  audio,
-  effect,
-  pause,
-  textTts,
-  buttons,
-  plural,
-  userify,
-  select,
-  once,
-  configure,
-  image,
-  enumerate,
-  getSessions,
-};

@@ -2,16 +2,11 @@
  * Reply implementation.
  */
 
-import {
-  isObject,
-  isString,
-  stringify,
-  removeUnneededSpaces,
-  convertNewlinesToSpaces,
-} from './utils.js';
+import {isObject, isString, stringify, removeUnneededSpaces, convertNewlinesToSpaces} from './utils';
 import {select} from './select';
 import {removeAccents} from './text';
-import {updateImageText} from './image';
+import {CardImage, updateImageText} from './image';
+import {Button} from "./buttons";
 
 /**
  * String literal function for building reply.
@@ -20,12 +15,23 @@ import {updateImageText} from './image';
  * @param {Array} injectedValues
  * @returns {*}
  */
-export const reply = (stringParts, ...injectedValues) => {
+
+export interface Response extends Record<string, any> {
+  text: string,
+  tts: string,
+  buttons?: Button[],
+  end_session: boolean,
+  card?: CardImage | {
+    type: 'ItemsList',
+    items: string[]
+  }
+}
+
+export const reply = (stringParts: TemplateStringsArray, ...injectedValues: Array<Partial<Response> | any>):
+  Response => {
   const response = stringParts.reduce((res, stringPart, index) => {
     // replace '\n' in string parts to allow newlines in IDE
-    const stringPartReply = convertSimpleValueToReply(
-      convertNewlinesToSpaces(stringPart)
-    );
+    const stringPartReply = convertSimpleValueToReply(convertNewlinesToSpaces(stringPart));
     let injectedValue = injectedValues[index];
     if (Array.isArray(injectedValue)) {
       injectedValue = select(injectedValue);
@@ -48,11 +54,12 @@ export const reply = (stringParts, ...injectedValues) => {
 /**
  * Reply and end session.
  *
+ * @param {TemplateStringsArray} stringParts
  * @param {Array} args
  * @returns {*}
  */
-reply.end = (...args) => {
-  return Object.assign(reply(...args), {end_session: true});
+reply.end = (stringParts: TemplateStringsArray, ...args: Array<Partial<Response>>) => {
+  return Object.assign(reply(stringParts, ...args), {end_session: true});
 };
 
 /**
@@ -62,7 +69,7 @@ reply.end = (...args) => {
  */
 const merge = (...objects) => {
   return objects.filter(Boolean).reduce((res, obj) => {
-    Object.keys(obj).forEach((key) => mergeProp(res, obj, key));
+    Object.keys(obj).forEach(key => mergeProp(res, obj, key));
     return res;
   }, {});
 };
@@ -88,10 +95,10 @@ const mergeProp = (to, from, key) => {
   }
 };
 
-const convertSimpleValueToReply = (value) => {
+const convertSimpleValueToReply = value => {
   const str = stringify(value);
   return {
     text: str,
-    tts: str,
+    tts: str
   };
 };

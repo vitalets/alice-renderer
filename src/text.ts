@@ -2,14 +2,15 @@
  * Working with text part.
  */
 
-import {stringify} from './utils.ts';
+import {stringify} from './utils';
 import {select} from './select';
+import {Response} from "./reply";
 
-export const text = (value) => {
+export const text = (value: string | string[]): Pick<Response, 'text'> => {
   value = Array.isArray(value) ? select(value) : value;
   return {
-    text: stringify(value),
+    text: stringify(value)
   };
 };
 
-export const removeAccents = (str) => str.replace(/\+(\S)/g, '$1');
+export const removeAccents = (str: string): string => str.replace(/\+(\S)/g, '$1');
