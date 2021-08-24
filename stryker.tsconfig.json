@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "allowUnreachableCode": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "rootDir": ""
+  },
+  "include": ["./src/", "test"],
+  "exclude": ["dist", "coverage",".stryker-tmp",".nyc_output"]
+}

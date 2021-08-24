@@ -12,3 +12,7 @@ npm-debug.log
 /coverage
 /todo.txt
 /reports
+/dist
+
+# stryker temp files
+.stryker-tmp

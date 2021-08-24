@@ -2,39 +2,26 @@
  * Stryker mutation testing config.
  *
  * To debug particular file:
- * npm run stryker -- -m src/reply.js
+ * npm run stryker -- -m src/reply.ts
  */
 
-module.exports = function (config) {
-  config.set({
-    mutate: [
-      'src/**/*.js',
-      '!src/index.js'
-    ],
-    mutator: {
-      name: 'javascript',
-      excludedMutations: [
-        'EqualityOperator',
-        'ArithmeticOperator',
-      ]
-    },
-    packageManager: 'npm',
-    reporters: ['clear-text', 'progress'],
-    testRunner: 'mocha',
-    mochaOptions: {
-      spec: [
-        'test/setup.js',
-        'test/specs/**/*.js',
-      ],
-    },
-    transpilers: [],
-    testFramework: 'mocha',
-    coverageAnalysis: 'perTest',
-    logLevel: 'info',
-    thresholds: {
-      high: 95,
-      low: 95,
-      break: 100
-    }
-  });
+module.exports = {
+  mutate: ['src/**/*.ts'],
+  packageManager: 'npm',
+  reporters: ['clear-text', 'progress'],
+  testRunner: 'mocha',
+  mochaOptions: {
+    spec: ['test/specs/**/*.ts'],
+  },
+  coverageAnalysis: 'perTest',
+  logLevel: 'info',
+  thresholds: {
+    high: 95,
+    low: 95,
+    break: 100,
+  },
+  "buildCommand": "tsc -b",
+  "checkers": ["typescript"],
+  "tsconfigFile": "stryker.tsconfig.json",
 };
+
