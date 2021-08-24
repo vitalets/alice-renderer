@@ -3,7 +3,7 @@
  */
 
 import {isObject} from './utils';
-import {Response} from "./reply";
+import {Response} from './reply';
 
 export interface Button {
   title: string,

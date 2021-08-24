@@ -4,7 +4,7 @@
 
 import {stringify} from './utils';
 import {select} from './select';
-import {Response} from "./reply";
+import {Response} from './reply';
 
 export const tts = (value: string | string[]): Pick<Response, 'tts'> => {
   value = Array.isArray(value) ? select(value) : value;

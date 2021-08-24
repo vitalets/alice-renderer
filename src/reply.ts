@@ -6,7 +6,7 @@ import {isObject, isString, stringify, removeUnneededSpaces, convertNewlinesToSp
 import {select} from './select';
 import {removeAccents} from './text';
 import {CardImage, updateImageText} from './image';
-import {Button} from "./buttons";
+import {Button} from './buttons';
 
 /**
  * String literal function for building reply.

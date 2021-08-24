@@ -6,7 +6,7 @@
 
 import {isFunction, isObject} from './utils';
 import {getOrCreateSession, setUserId} from './sessions';
-import {Response} from "./reply";
+import {Response} from './reply';
 
 /**
  * Userifies function or all methods of object.

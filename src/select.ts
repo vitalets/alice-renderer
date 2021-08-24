@@ -7,7 +7,7 @@ import {getRandomElement, groupBy} from './utils';
 import {config} from './configure';
 import {hasUserId, getValue, setValue} from './sessions';
 import {getLongWords, getCommonWordsCount} from './helpers/common-words';
-import {Response} from "./reply";
+import {Response} from './reply';
 
 /**
  * Selects random element from array:
