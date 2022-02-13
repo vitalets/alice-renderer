@@ -6,7 +6,7 @@ const {isObject} = require('./utils');
 
 const buttons = (items, defaults = {hide: true}) => {
   return {
-    buttons: items.filter(Boolean).map(item => valueToButton(item, defaults))
+    buttons: (items || []).filter(Boolean).map(item => valueToButton(item, defaults))
   };
 };
 
