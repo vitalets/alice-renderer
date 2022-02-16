@@ -175,7 +175,7 @@ describe('userify', () => {
       }
     });
 
-    it('calc key by strings as join of 5 truncated strings', () => {
+    it('calc key by strings as join of truncated strings', () => {
       const word = [
         'Отлично, Отлично, Отлично',
         'Супер, Супер, Супер',
@@ -190,7 +190,7 @@ describe('userify', () => {
       const session = getSessions().get(USER_ID);
       assert.deepEqual(Object.keys(session), [
         '$timestamp',
-        'Отлично, Отличн|Супер, Супер, С|Класс, Класс, К|Здорово, Здоров|Прекрасно, Прек',
+        'Здорово, З|Класс, Кла|Отлично, О|Прекрасно,|Супер, Суп|Шикарно, Ш',
       ]);
     });
 

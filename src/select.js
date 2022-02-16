@@ -3,10 +3,15 @@
  * No equal values in sequence.
  */
 
-const {getRandomElement, groupBy} = require('./utils');
+const {getRandomElement, groupBy, getCommonPrefix} = require('./utils');
 const {config} = require('./configure');
 const {hasUserId, getValue, setValue} = require('./sessions');
 const {getLongWords, getCommonWordsCount} = require('./helpers/common-words');
+
+/**
+ * Item length for key.
+ */
+const KEY_ITEM_LENGTH = 10;
 
 /**
  * Selects random element from array:
@@ -83,7 +88,7 @@ const getKey = arr => {
     // For array of strings build shorter key than JSON.stringify
     return isStrings(arr)
       ? buildKeyFromStrings(arr)
-      : JSON.stringify(arr);
+      : JSON.stringify(arr).replace(/"/g, '');
   } catch(e) {
     // in case of error, return empty key to fallback on getRandomElement()
     // eslint-disable-next-line no-console
@@ -92,7 +97,17 @@ const getKey = arr => {
 };
 
 const isStrings = arr => arr.every(item => typeof item === 'string');
-const buildKeyFromStrings = arr => arr.map(s => s.substr(0, 15)).slice(0, 5).join('|');
+const buildKeyFromStrings = arr => {
+  return arr
+    .slice() // dont mutate original array
+    .sort()
+    .map((item, i, arr) => {
+      // exclude common prefix from item strings
+      const startIndex = i === 0 ? 0 : getCommonPrefix(item, arr[i - 1]).length;
+      return item.substring(startIndex, startIndex + KEY_ITEM_LENGTH);
+    })
+    .join('|');
+};
 
 module.exports = {
   select,
