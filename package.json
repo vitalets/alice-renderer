@@ -16,7 +16,8 @@
     "import": "./src/index.mjs"
   },
   "files": [
-    "src/",
+    "src",
+    "index.d.ts",
     "README.md"
   ],
   "scripts": {
