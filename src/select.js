@@ -3,10 +3,10 @@
  * No equal values in sequence.
  */
 
-const {getRandomElement, groupBy, getCommonPrefix} = require('./utils');
+const {getRandomElement, groupBy} = require('./utils');
 const {config} = require('./configure');
 const {hasUserId, getValue, setValue} = require('./sessions');
-const {getLongWords, getCommonWordsCount} = require('./helpers/common-words');
+const {getLongWords, getCommonWordsCount, getCommonCharsCount} = require('./helpers/common-words');
 
 /**
  * Item length for key.
@@ -102,9 +102,11 @@ const buildKeyFromStrings = arr => {
     .slice() // dont mutate original array
     .sort()
     .map((item, i, arr) => {
-      // exclude common prefix from item strings
-      const startIndex = i === 0 ? 0 : getCommonPrefix(item, arr[i - 1]).length;
-      return item.substring(startIndex, startIndex + KEY_ITEM_LENGTH);
+      // strip common prefix from item strings
+      const commonCharsCount = getCommonCharsCount(item, arr[i - 1]);
+      return Array.from(item)
+        .slice(commonCharsCount, commonCharsCount + KEY_ITEM_LENGTH)
+        .join('');
     })
     .join('|');
 };

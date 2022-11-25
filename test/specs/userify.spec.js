@@ -194,6 +194,18 @@ describe('userify', () => {
       ]);
     });
 
+    it('dont cut emoji part in select keys', () => {
+      const word = [ '🌟', '🎯' ]; // '\uD83C\uDF1F', '\uD83C\uDFAF'
+      const fn = () => reply`${word}`;
+      const wrappedFn = userify(USER_ID, fn);
+      wrappedFn();
+      const session = getSessions().get(USER_ID);
+      assert.deepEqual(Object.keys(session), [
+        '$timestamp',
+        '🌟|🎯',
+      ]);
+    });
+
     describe('config.disableRandom = true', () => {
       before(() => {
         configure({disableRandom: true});

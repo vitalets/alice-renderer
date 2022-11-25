@@ -45,18 +45,6 @@ const groupBy = (arr, fn) => {
   }, {});
 };
 
-/**
- * Common prefix of 2 strings.
- */
-const getCommonPrefix = (s1, s2) => {
-  s1 = s1 || '';
-  s2 = s2 || '';
-  const l = Math.min(s1.length, s2.length);
-  let i = 0;
-  while (i < l && s1.charAt(i) === s2.charAt(i)) i++;
-  return s1.substring(0, i);
-};
-
 module.exports = {
   stringify,
   isObject,
@@ -67,5 +55,4 @@ module.exports = {
   convertNewlinesToSpaces,
   truncate,
   groupBy,
-  getCommonPrefix,
 };
